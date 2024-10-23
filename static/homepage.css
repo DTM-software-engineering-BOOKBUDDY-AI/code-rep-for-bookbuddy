@@ -1,0 +1,274 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #20233A;
+  color: white;
+  line-height: 1.6;
+}
+
+header {
+  background-color: #333;
+  padding: 1rem 0;
+  border-bottom: 3px solid #ec5990;
+}
+
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 90%;
+  margin: auto;
+}
+
+nav .logo h1 {
+  margin: 0;
+}
+
+nav ul {
+  display: flex;
+  list-style: none;
+}
+
+nav ul li {
+  margin-left: 2rem;
+}
+
+nav ul li a {
+  color: white;
+  text-decoration: none;
+}
+
+nav ul li a:hover {
+  text-decoration: underline;
+}
+
+main {
+  width: 90%;
+  margin: 2rem auto;
+}
+
+.welcome-section {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.welcome-section h2 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.welcome-section p {
+  font-size: 1.2rem;
+  margin-bottom: 1.5rem;
+}
+
+.welcome-section button {
+  background-color: #ec5990;
+  border: none;
+  padding: 0.75rem 2rem;
+  color: white;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.welcome-section button:hover {
+  background-color: #bf3360;
+}
+
+.popular-books {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.popular-books h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.book-cards {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+}
+
+.book-card {
+  background-color: #333;
+  padding: 1rem;
+  text-align: center;
+  border-radius: 10px;
+  width: 150px;
+}
+
+.book-card img {
+  width: 100%;
+  border-radius: 5px;
+  margin-bottom: 0.5rem;
+}
+
+.book-card p {
+  margin: 0.5rem 0;
+}
+
+.features {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.feature {
+  text-align: center;
+}
+
+.feature img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  margin-bottom: 0.5rem;
+}
+
+.search-section {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.search-section h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.search-bar {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.search-bar input {
+  padding: 0.5rem;
+  width: 300px;
+  border-radius: 5px 0 0 5px;
+  border: none;
+}
+
+.search-bar button {
+  padding: 0.5rem 1rem;
+  background-color: #ec5990;
+  border: none;
+  border-radius: 0 5px 5px 0;
+  color: white;
+  cursor: pointer;
+}
+
+.search-bar button:hover {
+  background-color: #bf3360;
+}
+
+.search-filters {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.search-filters select,
+.search-filters button {
+  padding: 0.5rem;
+  border-radius: 5px;
+  border: none;
+}
+
+.search-results {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.book-pdf {
+  width: 100px;
+  height: 150px;
+  background-color: #ec5990;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5rem;
+  color: white;
+  border-radius: 5px;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.pagination a {
+  color: white;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  background-color: #333;
+  border-radius: 5px;
+}
+
+.pagination a:hover {
+  background-color: #ec5990;
+}
+
+footer {
+  background-color: #333;
+  padding: 2rem 0;
+  text-align: center;
+  border-top: 3px solid #ec5990;
+}
+
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  width: 90%;
+  margin: auto;
+  margin-bottom: 1rem;
+}
+
+.company-info, .footer-links {
+  flex: 1;
+}
+
+.footer-links {
+  display: flex;
+  justify-content: space-around;
+}
+
+.footer-links div {
+  flex: 1;
+}
+
+.footer-links h4 {
+  margin-bottom: 0.5rem;
+}
+
+.footer-links ul {
+  list-style: none;
+}
+
+.footer-links ul li {
+  margin-bottom: 0.5rem;
+}
+
+.footer-links ul li a {
+  color: white;
+  text-decoration: none;
+}
+
+.footer-links ul li a:hover {
+  text-decoration: underline;
+}
+
+.footer-bottom {
+  border-top: 1px solid #ec5990;
+  padding-top: 1rem;
+}
