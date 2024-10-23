@@ -1,0 +1,165 @@
+/* General styles */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #0d1a26;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: #333;
+    padding: 1rem 0;
+    border-bottom: 3px solid #ec5990;
+}
+
+header .logo {
+    width: 150px;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 90%;
+    margin: auto;
+}
+
+nav .logo h1 {
+    margin: 0;
+}
+
+nav ul {
+    display: flex;
+    list-style: none;
+}
+
+nav ul li {
+    margin-left: 2rem;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+}
+
+nav ul li a:hover {
+    text-decoration: underline;
+}
+
+.intro h1 {
+    text-align: center;
+    color: #ff6384;
+    margin: 40px 0;
+    font-size: 36px;
+}
+
+/* Form Styles */
+.form-container {
+    width: 70%;
+    margin: 0 auto;
+    background-color: #1c2a40;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+    margin-bottom: 60px;
+}
+
+.question-content {
+    display: none;
+}
+
+.question-content.active {
+    display: block;
+}
+
+h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #ffffff;
+    text-align: center;
+}
+
+label {
+    font-size: 18px;
+}
+
+input[type="radio"], input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+button {
+    background-color: #ff6384;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button.next-button {
+    margin-top: 20px;
+}
+
+button.next-button:hover {
+    background-color: #ff4a6f;
+}
+
+button.submit-button {
+    margin-top: 20px;
+}
+
+footer {
+    background-color: #333;
+    padding: 2rem 0;
+    text-align: center;
+    border-top: 3px solid #ec5990;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    width: 90%;
+    margin: auto;
+    margin-bottom: 1rem;
+}
+
+.company-info, .footer-links {
+    flex: 1;
+}
+
+.footer-links {
+    display: flex;
+    justify-content: space-around;
+}
+
+.footer-links div {
+    flex: 1;
+}
+
+.footer-links h4 {
+    margin-bottom: 0.5rem;
+}
+
+.footer-links ul {
+    list-style: none;
+}
+
+.footer-links ul li {
+    margin-bottom: 0.5rem;
+}
+
+.footer-links ul li a {
+    color: white;
+    text-decoration: none;
+}
+
+.footer-links ul li a:hover {
+    text-decoration: underline;
+}
+
+.footer-bottom {
+    border-top: 1px solid #ec5990;
+    padding-top: 1rem;
+}
