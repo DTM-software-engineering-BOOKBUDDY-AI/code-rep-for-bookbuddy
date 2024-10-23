@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Buddy</title>
+    <link rel="stylesheet" href="/static/css/homepage.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <h1>Book Buddy</h1>
+            </div>
+            <ul>
+                <li><a href="{{ url_for('Recomendation_page') }}">Recomendation page</a></li>
+                <li><a href="signin.html">Sign In</a></li>
+                <li><a href="user.html">User Personal Page</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <main>
+        <section class="welcome-section">
+            <h2>Welcome to Book Buddy</h2>
+            <p>Discover Your Next Great Read with BookBuddy! Join our community to get personalized book recommendations tailored just for you. Whether you're a fan of thrilling mysteries, inspiring non-fiction, or captivating fantasy, BookBuddy has something for everyone. Start your literary journey with us today.</p>
+            <button>Find Your Next Book</button>
+        </section>
+        
+        <section class="popular-books">
+            <h2>Popular Books</h2>
+            <div class="book-cards">
+                <div class="book-card">
+                    <img src="/static/images/products/outliers.jpeg" alt="Outliers by Malcolm Gladwell">
+                    <p>Outliers</p>
+                    <p>Malcolm Gladwell</p>
+                </div>
+                <div class="book-card">
+                    <img src="/static/images/products/good-to-great.jpeg" alt="Good to Great by Jim Collins">
+                    <p>Good to Great</p>
+                    <p>Jim Collins</p>
+                </div>
+                <div class="book-card">
+                    <img src="/static/images/products/4-hour-workweek.jpeg" alt="The 4-Hour Workweek by Timothy Ferriss">
+                    <p>The 4-Hour Workweek</p>
+                    <p>Timothy Ferriss</p>
+                </div>
+                <div class="book-card">
+                    <img src="/static/images/products/linchpin.jpeg" alt="Linchpin by Seth Godin">
+                    <p>Linchpin</p>
+                    <p>Seth Godin</p>
+                </div>
+            </div>
+        </section>
+        
+        <section class="features">
+            <div class="feature">
+                <img src="/static/images/banner/friends.jpg" alt="Compete with your friends">
+                <p>Compete with your friends</p>
+            </div>
+            <div class="feature">
+                <img src="/static/images/banner/goal.jpeg" alt="Set goals">
+                <p>Set goals</p>
+            </div>
+            <div class="feature">
+                <img src="/static/images/banner/AI.jpeg" alt="AI powered recommendation system">
+                <p>AI powered recommendation system</p>
+            </div>
+            <div class="feature">
+                <img src="/static/images/banner/virtual_library.jpeg" alt="Your virtual library">
+                <p>Your virtual library</p>
+            </div>
+        </section>
+        
+        <section class="search-section">
+            <h2>Discover the Perfect Book for You</h2>
+            <div class="search-bar">
+                <input type="text" placeholder="Search for books...">
+                <button>Search</button>
+            </div>
+            <div class="search-filters">
+                <select>
+                    <option>Type</option>
+                    <option value="ebook">E-Book</option>
+                    <option value="audiobook">Audiobook</option>
+                    <option value="paperback">Paperback</option>
+                    <option value="hardcover">Hardcover</option>
+                </select>
+                <select>
+                    <option>Genre</option>
+                    <option value="fiction">Fiction</option>
+                    <option value="non-fiction">Non-Fiction</option>
+                    <option value="mystery">Mystery</option>
+                    <option value="fantasy">Fantasy</option>
+                    <option value="biography">Biography</option>
+                    <option value="self-help">Self-Help</option>
+                </select>
+                <select>
+                    <option>Rating</option>
+                    <option value="5">5 Stars</option>
+                    <option value="4">4 Stars</option>
+                    <option value="3">3 Stars</option>
+                    <option value="2">2 Stars</option>
+                    <option value="1">1 Star</option>
+                </select>
+                <select>
+                    <option>Author</option>
+                    <option value="malcolm-gladwell">Malcolm Gladwell</option>
+                    <option value="jim-collins">Jim Collins</option>
+                    <option value="timothy-ferriss">Timothy Ferriss</option>
+                    <option value="seth-godin">Seth Godin</option>
+                    <option value="jk-rowling">J.K. Rowling</option>
+                </select>
+                <button>Search</button>
+            </div>
+            <div class="search-results">
+                <div class="book-pdf">PDF</div>
+                <div class="book-pdf">PDF</div>
+                <div class="book-pdf">PDF</div>
+                <div class="book-pdf">PDF</div>
+                <div class="book-pdf">PDF</div>
+                <div class="book-pdf">PDF</div>
+            </div>
+            <div class="pagination">
+                <a href="#">&laquo;</a>
+                <a href="#">1</a>
+                <a href="#">2</a>
+                <a href="#">3</a>
+                <a href="#">4</a>
+                <a href="#">5</a>
+                <a href="#">&raquo;</a>
+            </div>
+        </section>
+    </main>
+    
+    <footer>
+        <div class="footer-content">
+            <div class="company-info">
+                <p>Bookbuddy</p>
+                <p>Learn with Bookbuddy. Carry out efficient studies using the services offered by Bookbuddy.</p>
+            </div>
+            <div class="footer-links">
+                <div>
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a href="#">Find Books</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Podcasts</a></li>
+                        <li><a href="#">User Guides</a></li>
+                        <li><a href="#">Discussion</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>2024. See terms of use for more information.</p>
+        </div>
+    </footer>
+</body>
+</html>
