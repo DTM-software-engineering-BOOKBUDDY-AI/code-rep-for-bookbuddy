@@ -17,5 +17,5 @@ BookBuddy is a web application that recommends books to users based on their pre
 ## Setup Instructions
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-repository/bookbuddy.git
-   cd bookbuddy
+   [git clone https://github.com/your-repository/bookbuddy.git](https://github.com/DTM-software-engineering-BOOKBUDDY-AI/code-rep-for-bookbuddy.git)
+   
