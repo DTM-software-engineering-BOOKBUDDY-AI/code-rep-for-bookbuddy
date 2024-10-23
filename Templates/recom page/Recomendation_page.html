@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookBuddy</title>
+    <link rel="stylesheet" href="/static/css/recom.css">
+</head>
+<body>
+<header>
+    <nav>
+        <div class="logo">
+            <h1>Book Buddy</h1>
+        </div>
+        <ul>
+            <li><a href="Recomendation_page.html"> Recomendation page </a></li>
+            <li><a href="signin.html">Sign In</a></li>
+            <li><a href="user.html">User Personal Page</a></li>
+        </ul>
+    </nav>
+</header>
+
+<main>
+    <section class="intro">
+        <h1>Welcome to BOOKBUDDY</h1>
+    </section>
+
+    <section class="form-container">
+        <form id="book-form">
+            <!-- Question 1: Standalone or Series -->
+            <div class="question-content active" id="question-1">
+                <h2>Are you looking for a standalone book or a series?</h2>
+                <label><input type="radio" name="series" value="Standalone"> Standalone</label><br>
+                <label><input type="radio" name="series" value="Series"> Series</label><br>
+                <button type="button" class="next-button" onclick="showNextQuestion()">Next</button>
+            </div>
+
+            <!-- Question 2: Themes -->
+            <div class="question-content" id="question-2">
+                <h2>What themes are you interested in?</h2>
+                <label><input type="checkbox" name="themes" value="Adventure"> Adventure</label><br>
+                <label><input type="checkbox" name="themes" value="Romance"> Romance</label><br>
+                <label><input type="checkbox" name="themes" value="Mystery"> Mystery</label><br>
+                <label><input type="checkbox" name="themes" value="Self-growth"> Self-growth</label><br>
+                <button type="button" class="next-button" onclick="showNextQuestion()">Next</button>
+            </div>
+
+            <!-- Question 3: Genre -->
+            <div class="question-content" id="question-3">
+                <h2>What genre do you feel like reading?</h2>
+                <label><input type="checkbox" name="genres" value="Fantasy"> Fantasy</label><br>
+                <label><input type="checkbox" name="genres" value="Science Fiction"> Science Fiction</label><br>
+                <label><input type="checkbox" name="genres" value="Historical"> Historical</label><br>
+                <label><input type="checkbox" name="genres" value="Thriller"> Thriller</label><br>
+                <button type="button" class="next-button" onclick="showNextQuestion()">Next</button>
+            </div>
+
+            <!-- Question 4: Mood -->
+            <div class="question-content" id="question-4">
+                <h2>What’s your current mood?</h2>
+                <label><input type="radio" name="mood" value="Happy"> Happy</label><br>
+                <label><input type="radio" name="mood" value="Sad"> Sad</label><br>
+                <label><input type="radio" name="mood" value="Curious"> Curious</label><br>
+                <label><input type="radio" name="mood" value="Adventurous"> Adventurous</label><br>
+                <button type="button" class="next-button" onclick="showNextQuestion()">Next</button>
+            </div>
+
+            <!-- Question 5: Book Length -->
+            <div class="question-content" id="question-5">
+                <h2>What’s your ideal book length?</h2>
+                <label><input type="radio" name="length" value="Short"> Short (less than 200 pages)</label><br>
+                <label><input type="radio" name="length" value="Medium"> Medium (200-400 pages)</label><br>
+                <label><input type="radio" name="length" value="Long"> Long (400+ pages)</label><br>
+                <button type="button" class="next-button" onclick="showNextQuestion()">Next</button>
+            </div>
+
+            <!-- Question 6: Book Pace -->
+            <div class="question-content" id="question-6">
+                <h2>Do you want a book with a fast or slow pace?</h2>
+                <label><input type="radio" name="pace" value="Fast"> Fast</label><br>
+                <label><input type="radio" name="pace" value="Slow"> Slow</label><br>
+                <label><input type="radio" name="pace" value="Balanced"> Balanced</label><br>
+                <button type="button" class="next-button" onclick="showNextQuestion()">Next</button>
+            </div>
+
+            <!-- Final: View Recommendations -->
+            <div class="question-content" id="recommendations">
+                <h2>Based on your preferences, here are some recommendations:</h2>
+                <div id="recommendations-list">
+                    <!-- Recommendations from API -->
+                </div>
+                <button type="submit" class="submit-button">Submit</button>
+            </div>
+        </form>
+    </section>
+</main>
+
+<footer>
+    <div class="footer-content">
+        <div class="company-info">
+            <p>Bookbuddy</p>
+            <p>Learn with Bookbuddy. Carry out efficient studies using the services offered by Bookbuddy.</p>
+        </div>
+        <div class="footer-links">
+            <div>
+                <h4>Services</h4>
+                <ul>
+                    <li><a href="#">Find Books</a></li>
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="#">Podcasts</a></li>
+                    <li><a href="#">User Guides</a></li>
+                    <li><a href="#">Discussion</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4>Company</h4>
+                <ul>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>2024. See terms of use for more information.</p>
+    </div>
+</footer>
+
+<script src="/static/js/recom.js"></script>
+</body>
+</html>
