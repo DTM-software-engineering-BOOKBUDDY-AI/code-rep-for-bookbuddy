@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Recommendation</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <!-- Left-aligned header with image and menu items -->
+            <img src="https://example.com/header-image.jpg" alt="Header Image" id="header-image">
+            <nav>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Books</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <div class="content">
+            <h1>This Is the Book that We Recommend</h1>
+
+            <div class="slideshow">
+                <button class="arrow" id="prev" onclick="prevImage()">&#9664;</button>
+                <img id="book-cover" src="https://covers.openlibrary.org/b/id/8224816-L.jpg" alt="Don Quixote">
+                <button class="arrow" id="next" onclick="nextImage()">&#9654;</button>
+            </div>
+
+            <div class="book-info">
+                <div class="details">
+                    <p><strong>Name:</strong> Don Quixote</p>
+                    <p><strong>Author:</strong> Miguel de Cervantes</p>
+                    <p><strong>Language:</strong> Spanish</p>
+                    <p><strong>Genre:</strong> Novel</p>
+                    <p><strong>Publication Date:</strong> 1605</p>
+                    <p><strong>Goodreads Rating:</strong> 3.87</p>
+                </div>
+
+                <div id="summary-box">
+                    <p id="summary-preview">Don Quixote is a Spanish novel by Miguel de Cervantes...</p>
+                    <button class="summary-btn" onclick="toggleSummary()">&#9660;</button>
+                    <div id="full-summary" class="hidden">
+                        <p>The story tells the adventures of a nobleman who reads so many chivalric romances that he loses his mind and decides to become a knight-errant...</p>
+                    </div>
+                </div>
+
+                <button class="fav-btn">Add to Favourite</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
