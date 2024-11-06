@@ -12,5 +12,9 @@ def form():
 @app.route('/recommendation')
 def recommendation():
     return render_template("recommendation.html")
+
+@app.route('/testbase')
+def testbase():
+    return render_template("testing_base.html")
 if __name__ == '__main__':
     app.run(debug=True)
