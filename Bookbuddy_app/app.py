@@ -7,6 +7,6 @@ def hello_world():
 
 @app.route('/Recomendation_page')
 def Recomendation_page():
-    return render_template("/recom page/Recomendation_page.html")
+    return render_template("/form/form.html")
 
 app.run(debug=True)

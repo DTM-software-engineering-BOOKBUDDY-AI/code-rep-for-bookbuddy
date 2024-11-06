@@ -1,32 +1,39 @@
-/* General styles */
-body {
-    font-family: 'Arial', sans-serif;
-    background-color: #0d1a26;
-    color: #fff;
+* {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
 }
 
-header {
-    background-color: #333;
-    padding: 1rem 0;
-    border-bottom: 3px solid #ec5990;
-}
-
-header .logo {
-    width: 150px;
-}
-
-nav {
+body {
+    background-color: #1a1a2e;
+    color: #fff;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    width: 90%;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    text-align: center;
+    width: 100%;
+    max-width: 400px;
     margin: auto;
 }
 
-nav .logo h1 {
-    margin: 0;
+/* Header Section */
+header {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+#header-image {
+    width: 60px;
+    height: auto;
+    margin-right: 20px;
 }
 
 nav ul {
@@ -35,131 +42,152 @@ nav ul {
 }
 
 nav ul li {
-    margin-left: 2rem;
+    margin-right: 15px;
 }
 
 nav ul li a {
     color: white;
     text-decoration: none;
+    font-size: 16px;
 }
 
-nav ul li a:hover {
-    text-decoration: underline;
-}
-
-.intro h1 {
+/* Faded Title Box */
+h1 {
+    color: #fff;
+    background: linear-gradient(to right, rgba(26, 26, 46, 0), rgba(102, 45, 145, 1), rgba(26, 26, 46, 0)); /* Horizontal fading effect */
+    padding: 20px;
     text-align: center;
-    color: #ff6384;
-    margin: 40px 0;
-    font-size: 36px;
+    border-radius: 10px;
+    margin-bottom: 20px;
 }
 
-/* Form Styles */
-.form-container {
-    width: 70%;
-    margin: 0 auto;
-    background-color: #1c2a40;
-    padding: 30px;
-    border-radius: 15px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
-    margin-bottom: 60px;
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-.question-content {
+.slideshow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.arrow {
+    background-color: transparent;
+    color: #fff;
+    border: none;
+    font-size: 30px;
+    cursor: pointer;
+    margin: 0 20px;
+}
+
+#book-cover {
+    width: 200px;
+    height: auto;
+}
+
+.book-info {
+    width: 100%;
+    text-align: center;
+}
+
+.details {
+    background-color: #3d3d5c;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    text-align: left; /* Left-align text but not the box */
+}
+
+#summary-box {
+    width: 100%;
+    margin-bottom: 10px;
+    position: relative;
+}
+
+#summary-preview {
+    background-color: #3d3d5c;
+    padding: 10px;
+    border-radius: 10px;
+    display: inline-block;
+    margin-bottom: 10px;
+    overflow: hidden;
+    white-space: nowrap; /* Only show one line */
+    text-overflow: ellipsis; /* Adds "..." to cut-off text */
+}
+
+#full-summary {
+    background-color: #3d3d5c;
+    padding: 10px;
+    border-radius: 10px;
+    margin-top: 10px;
+}
+
+.hidden {
     display: none;
 }
 
-.question-content.active {
-    display: block;
-}
-
-h2 {
-    font-size: 24px;
-    margin-bottom: 20px;
-    color: #ffffff;
-    text-align: center;
-}
-
-label {
-    font-size: 18px;
-}
-
-input[type="radio"], input[type="checkbox"] {
-    margin-right: 10px;
-}
-
-button {
-    background-color: #ff6384;
+/* Smaller dropdown button */
+.summary-btn {
+    display: inline-block;
+    background-color: rgba(102, 45, 145, 0.5); /* Blurred background */
     color: white;
     border: none;
-    padding: 10px 20px;
-    font-size: 16px;
+    padding: 5px 10px; /* Small button */
     border-radius: 5px;
     cursor: pointer;
+    font-size: 16px;
+    backdrop-filter: blur(5px); /* Apply blur effect */
 }
 
-button.next-button {
-    margin-top: 20px;
+/* Favourite Button */
+.fav-btn {
+    background-color: #662d91;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 10px 0;
 }
 
-button.next-button:hover {
-    background-color: #ff4a6f;
-}
+/* Responsive Design for Mobile */
+@media (max-width: 600px) {
+    .container {
+        padding: 10px;
+    }
 
-button.submit-button {
-    margin-top: 20px;
-}
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
 
-footer {
-    background-color: #333;
-    padding: 2rem 0;
-    text-align: center;
-    border-top: 3px solid #ec5990;
-}
+    header img {
+        margin-bottom: 10px;
+    }
 
-.footer-content {
-    display: flex;
-    justify-content: space-between;
-    width: 90%;
-    margin: auto;
-    margin-bottom: 1rem;
-}
+    nav ul {
+        flex-direction: column;
+        align-items: flex-start;
+    }
 
-.company-info, .footer-links {
-    flex: 1;
-}
+    h1 {
+        font-size: 18px;
+    }
 
-.footer-links {
-    display: flex;
-    justify-content: space-around;
-}
+    #book-cover {
+        width: 150px;
+    }
 
-.footer-links div {
-    flex: 1;
-}
+    .arrow {
+        font-size: 24px;
+        margin: 0 10px;
+    }
 
-.footer-links h4 {
-    margin-bottom: 0.5rem;
-}
-
-.footer-links ul {
-    list-style: none;
-}
-
-.footer-links ul li {
-    margin-bottom: 0.5rem;
-}
-
-.footer-links ul li a {
-    color: white;
-    text-decoration: none;
-}
-
-.footer-links ul li a:hover {
-    text-decoration: underline;
-}
-
-.footer-bottom {
-    border-top: 1px solid #ec5990;
-    padding-top: 1rem;
+    .fav-btn, .summary-btn {
+        font-size: 14px;
+        padding: 8px;
+    }
 }
