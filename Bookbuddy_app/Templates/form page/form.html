@@ -13,7 +13,7 @@
             <h1>Book Buddy</h1>
         </div>
         <ul>
-            <li><a href="Recomendation_page.html"> Recomendation page </a></li>
+            <li><a href="home"> Home </a></li>
             <li><a href="signin.html">Sign In</a></li>
             <li><a href="user.html">User Personal Page</a></li>
         </ul>
@@ -26,7 +26,7 @@
     </section>
 
     <section class="form-container">
-        <form id="book-form">
+        <form id="book-form" action="{{ url_for('recommendation') }}">
             <!-- Question 1: Standalone or Series -->
             <div class="question-content active" id="question-1">
                 <h2>Are you looking for a standalone book or a series?</h2>
@@ -126,6 +126,6 @@
     </div>
 </footer>
 
-<script src="/static/js/recom.js"></script>
+<script src="/static/js/form.js"></script>
 </body>
 </html>
