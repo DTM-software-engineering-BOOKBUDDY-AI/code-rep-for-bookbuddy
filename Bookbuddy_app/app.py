@@ -1,5 +1,5 @@
 from flask import Flask, render_template, url_for, redirect
-from flask_login import LoginManager, UserMixin, current_user
+from flask_login import LoginManager, UserMixin, current_user # type: ignore
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your-secret-key-here'  # Replace with a real secret key
