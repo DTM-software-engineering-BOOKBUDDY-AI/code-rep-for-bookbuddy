@@ -6,65 +6,35 @@
 
 body {
   font-family: Arial, sans-serif;
-  background-color: #20233A;
-  color: white;
+  background-color: #f0f2f5 !important;
+  color: #333;
   line-height: 1.6;
-}
-
-header {
-  background-color: #333;
-  padding: 1rem 0;
-  border-bottom: 3px solid #ec5990;
-}
-
-nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 90%;
-  margin: auto;
-}
-
-nav .logo h1 {
-  margin: 0;
-}
-
-nav ul {
-  display: flex;
-  list-style: none;
-}
-
-nav ul li {
-  margin-left: 2rem;
-}
-
-nav ul li a {
-  color: white;
-  text-decoration: none;
-}
-
-nav ul li a:hover {
-  text-decoration: underline;
 }
 
 main {
   width: 90%;
   margin: 2rem auto;
+  background-color: transparent;
+  color: inherit;
+  padding: 20px;
 }
 
 .welcome-section {
   text-align: center;
   margin-bottom: 2rem;
+  color: inherit;
 }
 
 .welcome-section h2 {
   font-size: 2.5rem;
   margin-bottom: 1rem;
+  color: #333;
 }
 
 .welcome-section p {
   font-size: 1.2rem;
   margin-bottom: 1.5rem;
+  color: #555;
 }
 
 .welcome-section button {
@@ -74,6 +44,7 @@ main {
   color: white;
   cursor: pointer;
   font-size: 1rem;
+  border-radius: 5px;
 }
 
 .welcome-section button:hover {
@@ -88,58 +59,74 @@ main {
 .popular-books h2 {
   font-size: 2rem;
   margin-bottom: 1rem;
+  color: #333;
 }
 
 .book-cards {
   display: flex;
   justify-content: center;
-  gap: 2rem;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .book-card {
-  background-color: #333;
+  background-color: #ffffff;
   padding: 1rem;
   text-align: center;
   border-radius: 10px;
-  width: 150px;
+  width: 180px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .book-card img {
   width: 100%;
+  height: auto;
+  object-fit: cover;
   border-radius: 5px;
-  margin-bottom: 0.5rem;
 }
 
 .book-card p {
-  margin: 0.5rem 0;
+  color: #555;
 }
 
 .features {
   display: flex;
   justify-content: center;
-  gap: 2rem;
-  margin-bottom: 2rem;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .feature {
+  background-color: #ffffff;
+  padding: 1rem;
   text-align: center;
+  border-radius: 10px;
+  width: 180px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .feature img {
   width: 100px;
   height: 100px;
+  object-fit: cover;
   border-radius: 50%;
-  margin-bottom: 0.5rem;
+}
+
+.feature p {
+  color: #555;
 }
 
 .search-section {
-  text-align: center;
-  margin-bottom: 2rem;
+  background-color: #ffffff;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .search-section h2 {
   font-size: 2rem;
   margin-bottom: 1rem;
+  color: #333;
 }
 
 .search-bar {
@@ -149,37 +136,33 @@ main {
 }
 
 .search-bar input {
+  width: 70%;
   padding: 0.5rem;
-  width: 300px;
-  border-radius: 5px 0 0 5px;
-  border: none;
+  border-radius: 5px;
+  border: 1px solid #ced4da;
 }
 
 .search-bar button {
   padding: 0.5rem 1rem;
-  background-color: #ec5990;
+  border-radius: 5px;
   border: none;
-  border-radius: 0 5px 5px 0;
+  background-color: #ec5990;
   color: white;
-  cursor: pointer;
-}
-
-.search-bar button:hover {
-  background-color: #bf3360;
+  margin-left: 0.5rem;
 }
 
 .search-filters {
   display: flex;
   justify-content: center;
   gap: 1rem;
-  margin-bottom: 1rem;
+  flex-wrap: wrap;
 }
 
 .search-filters select,
 .search-filters button {
   padding: 0.5rem;
   border-radius: 5px;
-  border: none;
+  border: 1px solid #ced4da;
 }
 
 .search-results {
@@ -187,6 +170,7 @@ main {
   justify-content: center;
   gap: 1rem;
   margin-bottom: 1rem;
+  flex-wrap: wrap;
 }
 
 .book-pdf {
@@ -208,22 +192,17 @@ main {
 }
 
 .pagination a {
-  color: white;
+  color: #333;
   text-decoration: none;
   padding: 0.5rem 1rem;
-  background-color: #333;
+  background-color: white;
   border-radius: 5px;
+  border: 1px solid #ced4da;
 }
 
 .pagination a:hover {
   background-color: #ec5990;
-}
-
-footer {
-  background-color: #333;
-  padding: 2rem 0;
-  text-align: center;
-  border-top: 3px solid #ec5990;
+  color: white;
 }
 
 .footer-content {
@@ -260,7 +239,7 @@ footer {
 }
 
 .footer-links ul li a {
-  color: white;
+  color: #333;
   text-decoration: none;
 }
 
@@ -271,4 +250,213 @@ footer {
 .footer-bottom {
   border-top: 1px solid #ec5990;
   padding-top: 1rem;
+}
+
+@media (max-width: 768px) {
+  .homepage-container {
+    padding: 1rem 0;
+  }
+  
+  .welcome-card {
+    margin: 0 1rem;
+  }
+  
+  .book-card img {
+    height: 200px;
+  }
+}
+
+/* Override Bootstrap defaults and add custom styles */
+body {
+    background-color: #20233A;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: white;
+    padding: 0.5rem 1.5rem;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+    font-weight: 600;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+    transform: translateY(-2px);
+}
+
+.card {
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.book-card img {
+    height: 200px;
+    object-fit: cover;
+}
+
+.feature img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+}
+
+.search-section {
+    background-color: #ffffff;
+}
+
+.pagination .page-link {
+    color: #ec5990;
+}
+
+.pagination .page-link:hover {
+    color: #bf3360;
+}
+
+.display-4, .display-5 {
+    font-weight: 600;
+}
+
+.shadow-lg {
+    box-shadow: 0 1rem 3rem rgba(0,0,0,.175)!important;
+}
+
+/* Custom styles for the search filters */
+.form-select {
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+}
+
+.form-select:focus {
+    border-color: #ec5990;
+    box-shadow: 0 0 0 0.25rem rgba(236, 89, 144, 0.25);
+}
+
+/* Custom styles for the PDF cards */
+.search-results .card {
+    background-color: #ec5990;
+    height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .welcome-section {
+        padding: 2rem 1rem;
+    }
+    
+    .feature img {
+        width: 80px;
+        height: 80px;
+    }
+}
+
+/* Main Styles */
+.homepage-container {
+    background-color: #20233A;
+    min-height: 100vh;
+    padding: 2rem 0;
+}
+
+/* Welcome Section */
+.welcome-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 15px;
+}
+
+/* Book Cards */
+.book-card {
+    transition: transform 0.3s ease;
+    border-radius: 10px;
+    overflow: hidden;
+    background: white;
+}
+
+.book-card:hover {
+    transform: translateY(-5px);
+}
+
+.book-card img {
+    height: 300px;
+    object-fit: cover;
+}
+
+/* Feature Cards */
+.feature-card {
+    background: white;
+    border-radius: 10px;
+    transition: transform 0.3s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+}
+
+.feature-img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* Search Section */
+.search-section .card {
+    background: white;
+    border-radius: 15px;
+}
+
+/* Button Styles */
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: white;
+    padding: 0.5rem 1.5rem;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+    font-weight: 600;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+    transform: translateY(-2px);
+}
+
+/* Form Controls */
+.form-control, .form-select {
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    padding: 0.75rem 1rem;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #ec5990;
+    box-shadow: 0 0 0 0.25rem rgba(236, 89, 144, 0.25);
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .homepage-container {
+        padding: 1rem 0;
+    }
+    
+    .welcome-card {
+        margin: 0 1rem;
+    }
+    
+    .book-card img {
+        height: 200px;
+    }
 }
