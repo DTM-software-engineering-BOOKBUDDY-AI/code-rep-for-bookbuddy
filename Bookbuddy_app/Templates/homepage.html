@@ -11,112 +11,173 @@
     <section class="welcome-section">
         <h2>Welcome to Book Buddy</h2>
         <p>Discover Your Next Great Read with BookBuddy! Join our community to get personalized book recommendations tailored just for you. Whether you're a fan of thrilling mysteries, inspiring non-fiction, or captivating fantasy, BookBuddy has something for everyone. Start your literary journey with us today.</p>
-        <button>Find Your Next Book</button>
+        <button class="btn btn-primary">Find Your Next Book</button>
     </section>
     
     <section class="popular-books">
         <h2>Popular Books</h2>
-        <div class="book-cards">
-            <div class="book-card">
-                <img src="/static/images/products/outliers.jpeg" alt="Outliers by Malcolm Gladwell">
-                <p>Outliers</p>
-                <p>Malcolm Gladwell</p>
+        <div id="bookCarousel" class="carousel slide" data-bs-ride="carousel">
+            <!-- Carousel Indicators -->
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#bookCarousel" data-bs-slide-to="0" class="active"></button>
+                <button type="button" data-bs-target="#bookCarousel" data-bs-slide-to="1"></button>
             </div>
-            <div class="book-card">
-                <img src="/static/images/products/good-to-great.jpeg" alt="Good to Great by Jim Collins">
-                <p>Good to Great</p>
-                <p>Jim Collins</p>
+
+            <!-- Carousel Items -->
+            <div class="carousel-inner">
+                <!-- First Slide -->
+                <div class="carousel-item active">
+                    <div class="book-cards">
+                        <div class="book-card">
+                            <img src="/static/images/products/outliers.jpeg" alt="Outliers by Malcolm Gladwell">
+                            <p>Outliers</p>
+                            <p>Malcolm Gladwell</p>
+                        </div>
+                        <div class="book-card">
+                            <img src="/static/images/products/good-to-great.jpeg" alt="Good to Great by Jim Collins">
+                            <p>Good to Great</p>
+                            <p>Jim Collins</p>
+                        </div>
+                        <div class="book-card">
+                            <img src="/static/images/products/4-hour-workweek.jpeg" alt="The 4-Hour Workweek by Timothy Ferriss">
+                            <p>The 4-Hour Workweek</p>
+                            <p>Timothy Ferriss</p>
+                        </div>
+                        <div class="book-card">
+                            <img src="/static/images/products/linchpin.jpeg" alt="Linchpin by Seth Godin">
+                            <p>Linchpin</p>
+                            <p>Seth Godin</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Second Slide -->
+                <div class="carousel-item">
+                    <div class="book-cards">
+                        <div class="book-card">
+                            <img src="/static/images/products/atomic-habits.jpg" alt="Atomic Habits by James Clear">
+                            <p>Atomic Habits</p>
+                            <p>James Clear</p>
+                        </div>
+                        <div class="book-card">
+                            <img src="/static/images/products/think and grow.jpg" alt="Think and Grow Rich by Napoleon Hill">
+                            <p>Think and Grow Rich</p>
+                            <p>Napoleon Hill</p>
+                        </div>
+                        <div class="book-card">
+                            <img src="/static/images/products/rich dad poor dad.jpg" alt="Rich Dad Poor Dad by Robert Kiyosaki">
+                            <p>Rich Dad Poor Dad</p>
+                            <p>Robert Kiyosaki</p>
+                        </div>
+                        <div class="book-card">
+                            <img src="/static/images/products/start with why.jpg" alt="Start with Why by Simon Sinek">
+                            <p>Start with Why</p>
+                            <p>Simon Sinek</p>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="book-card">
-                <img src="/static/images/products/4-hour-workweek.jpeg" alt="The 4-Hour Workweek by Timothy Ferriss">
-                <p>The 4-Hour Workweek</p>
-                <p>Timothy Ferriss</p>
-            </div>
-            <div class="book-card">
-                <img src="/static/images/products/linchpin.jpeg" alt="Linchpin by Seth Godin">
-                <p>Linchpin</p>
-                <p>Seth Godin</p>
-            </div>
+
+            <!-- Carousel Controls -->
+            <button class="carousel-control-prev" type="button" data-bs-target="#bookCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#bookCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
         </div>
     </section>
     
     <section class="features">
-        <div class="feature">
-            <img src="/static/images/banner/friends.jpg" alt="Compete with your friends">
-            <p>Compete with your friends</p>
-        </div>
-        <div class="feature">
-            <img src="/static/images/banner/goal.jpeg" alt="Set goals">
-            <p>Set goals</p>
-        </div>
-        <div class="feature">
-            <img src="/static/images/banner/AI.jpeg" alt="AI powered recommendation system">
-            <p>AI powered recommendation system</p>
-        </div>
-        <div class="feature">
-            <img src="/static/images/banner/virtual_library.jpeg" alt="Your virtual library">
-            <p>Your virtual library</p>
+        <h2 class="features-title">Why Choose BookBuddy?</h2>
+        <div class="features-container">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <img src="/static/images/banner/friends.jpg" alt="Compete with your friends">
+                </div>
+                <h3>Social Reading</h3>
+                <p>Connect and compete with friends. Share your reading progress and recommendations.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <img src="/static/images/banner/goal.jpeg" alt="Set goals">
+                </div>
+                <h3>Goal Tracking</h3>
+                <p>Set personal reading goals and track your progress with interactive dashboards.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <img src="/static/images/banner/AI.jpeg" alt="AI powered recommendation system">
+                </div>
+                <h3>Smart Recommendations</h3>
+                <p>Get personalized book suggestions powered by our advanced AI system.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <img src="/static/images/banner/virtual_library.jpeg" alt="Your virtual library">
+                </div>
+                <h3>Virtual Library</h3>
+                <p>Organize and access your digital collection anytime, anywhere.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <img src="/static/images/banner/reading-stats.jpg" alt="Reading Analytics">
+                </div>
+                <h3>Reading Analytics</h3>
+                <p>Track your reading speed, comprehension level, and get detailed insights about your reading habits.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <img src="/static/images/banner/bookclub.jpg" alt="Book Clubs">
+                </div>
+                <h3>Virtual Book Clubs</h3>
+                <p>Join or create virtual book clubs, participate in discussions, and connect with readers worldwide.</p>
+            </div>
         </div>
     </section>
     
-    <section class="search-section">
-        <h2>Discover the Perfect Book for You</h2>
-        <div class="search-bar">
-            <input type="text" placeholder="Search for books...">
-            <button>Search</button>
-        </div>
-        <div class="search-filters">
-            <select>
-                <option>Type</option>
-                <option value="ebook">E-Book</option>
-                <option value="audiobook">Audiobook</option>
-                <option value="paperback">Paperback</option>
-                <option value="hardcover">Hardcover</option>
-            </select>
-            <select>
-                <option>Genre</option>
-                <option value="fiction">Fiction</option>
-                <option value="non-fiction">Non-Fiction</option>
-                <option value="mystery">Mystery</option>
-                <option value="fantasy">Fantasy</option>
-                <option value="biography">Biography</option>
-                <option value="self-help">Self-Help</option>
-            </select>
-            <select>
-                <option>Rating</option>
-                <option value="5">5 Stars</option>
-                <option value="4">4 Stars</option>
-                <option value="3">3 Stars</option>
-                <option value="2">2 Stars</option>
-                <option value="1">1 Star</option>
-            </select>
-            <select>
-                <option>Author</option>
-                <option value="malcolm-gladwell">Malcolm Gladwell</option>
-                <option value="jim-collins">Jim Collins</option>
-                <option value="timothy-ferriss">Timothy Ferriss</option>
-                <option value="seth-godin">Seth Godin</option>
-                <option value="jk-rowling">J.K. Rowling</option>
-            </select>
-            <button>Search</button>
-        </div>
-        <div class="search-results">
-            <div class="book-pdf">PDF</div>
-            <div class="book-pdf">PDF</div>
-            <div class="book-pdf">PDF</div>
-            <div class="book-pdf">PDF</div>
-            <div class="book-pdf">PDF</div>
-            <div class="book-pdf">PDF</div>
-        </div>
-        <div class="pagination">
-            <a href="#">&laquo;</a>
-            <a href="#">1</a>
-            <a href="#">2</a>
-            <a href="#">3</a>
-            <a href="#">4</a>
-            <a href="#">5</a>
-            <a href="#">&raquo;</a>
+    <section class="join-community">
+        <div class="join-content">
+            <h2>Start Your Reading Journey Today</h2>
+            <p>Join thousands of book lovers who have already discovered their next favorite read.</p>
+            
+            <div class="stats-container">
+                <div class="stat-item">
+                    <span class="stat-number">50K+</span>
+                    <span class="stat-label">Active Readers</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">100K+</span>
+                    <span class="stat-label">Books Available</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">4.8</span>
+                    <span class="stat-label">User Rating</span>
+                </div>
+            </div>
+
+            <div class="cta-buttons">
+                <button class="btn btn-primary btn-lg">Join Now - It's Free!</button>
+                <button class="btn btn-outline btn-lg">Learn More</button>
+            </div>
         </div>
     </section>
 </main>
+{% endblock %}
+
+{% block extra_js %}
+    <!-- AOS Library for scroll animations -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script>
+        AOS.init({
+            duration: 1000,
+            once: true,
+            offset: 100
+        });
+    </script>
+    
+    <!-- Custom JavaScript -->
+    <script src="{{ url_for('static', filename='js/homepage.js') }}"></script>
 {% endblock %}
