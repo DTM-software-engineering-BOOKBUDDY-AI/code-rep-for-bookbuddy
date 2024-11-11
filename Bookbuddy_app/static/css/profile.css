@@ -26,68 +26,124 @@ header ul li a {
 
 /* Edit Profile Section */
 body {
-    background-color: #1e2a45;
+    background-color: #f8f9fa;
     font-family: Arial, sans-serif;
-    color: #fff;
 }
 
 .edit-profile {
     max-width: 600px;
     margin: 50px auto;
-    background-color: #1e2a45;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    background-color: #ffffff;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
 }
 
 .edit-profile h1 {
     text-align: center;
-    margin-bottom: 20px;
-    font-size: 24px;
+    margin-bottom: 2rem;
+    font-size: 2rem;
+    color: #1a1a2e;
 }
 
 .profile-picture {
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 2rem;
+    position: relative;
 }
 
 .profile-picture img {
-    width: 100px;
-    height: 100px;
+    width: 120px;
+    height: 120px;
     border-radius: 50%;
+    border: 3px solid #0d6efd;
+    padding: 3px;
+    background-color: #fff;
+    transition: transform 0.3s ease;
+}
+
+.profile-picture img:hover {
+    transform: scale(1.05);
 }
 
 .profile-picture p {
     margin-top: 10px;
-    color: #ccc;
+    color: #0d6efd;
+    cursor: pointer;
+    font-weight: 500;
 }
 
 /* Form Styling */
-form {
-    display: flex;
-    flex-direction: column;
-}
-
 .form-group {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 15px;
+    margin-bottom: 1.5rem;
 }
 
 .form-group label {
-    margin-bottom: 5px;
-    font-weight: bold;
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #1a1a2e;
 }
 
 .form-group input {
-    padding: 10px;
-    background-color: #2c3e50;
-    border: none;
-    border-radius: 5px;
-    color: #fff;
+    width: 100%;
+    padding: 0.75rem;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    color: #495057;
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.1);
 }
 
 h2 {
-    margin-top: 20px;
-    font-size: 20px;
+    margin: 2rem 0 1.5rem;
+    font-size: 1.5rem;
+    color: #1a1a2e;
+    border-bottom: 2px solid #dee2e6;
+    padding-bottom: 0.5rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .edit-profile {
+        margin: 20px;
+        padding: 1.5rem;
+    }
+}
+
+/* Add hover effects */
+.form-group input:hover {
+    background-color: #fff;
+    border-color: #0d6efd;
+}
+
+/* Style the submit button */
+.btn-primary {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+/* Add animation for form inputs */
+.form-group input {
+    transform-origin: left;
+    animation: slideIn 0.3s ease-out forwards;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }

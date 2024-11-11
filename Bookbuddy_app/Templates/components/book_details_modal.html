@@ -1,0 +1,38 @@
+<div class="modal fade" id="bookDetailsModal" tabindex="-1" aria-labelledby="bookDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="bookDetailsModalLabel">Book Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="book-details-content">
+                    <div class="book-cover-large mb-3">
+                        <img src="" alt="Book Cover" id="modalBookCover">
+                    </div>
+                    <h4 id="modalBookTitle"></h4>
+                    <p class="text-muted" id="modalBookAuthor"></p>
+                    <div class="book-stats my-3">
+                        <div class="stat">
+                            <i class="fas fa-star text-warning"></i>
+                            <span id="modalBookRating"></span>
+                        </div>
+                        <div class="stat">
+                            <i class="fas fa-book"></i>
+                            <span id="modalBookPages"></span>
+                        </div>
+                        <div class="stat">
+                            <i class="fas fa-language"></i>
+                            <span id="modalBookLanguage"></span>
+                        </div>
+                    </div>
+                    <p class="book-description" id="modalBookDescription"></p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Add to Reading List</button>
+            </div>
+        </div>
+    </div>
+</div> 

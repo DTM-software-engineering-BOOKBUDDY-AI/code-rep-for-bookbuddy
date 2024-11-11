@@ -1,71 +1,158 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Library</title>
-    <link rel="stylesheet" href="/Bookbuddy_app/static/css/my_lib.css">
-</head>
-<body>
-    <header>
-        <nav>
-            <ul>
-                <li><a href="#">Home</a></li>
-                <li><a href="#">About Us</a></li>
-                <li><a href="#">Account</a></li>
-            </ul>
-        </nav>
-    </header>
+{% extends "base.html" %}
 
-    <section class="library-section">
-        <h1>My Library</h1>
+{% block title %}My Library{% endblock %}
 
-        <div class="book-category">
-            <h2>My Top 3 Books</h2>
-            <div class="book-grid">
-                <div class="book">
-                    <img src="/Bookbuddy_app/static/images/products/01.jpg" alt="Book 1">
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/my_lib.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container py-5 pb-5">
+    <!-- Header Section -->
+    <div class="row mb-5">
+        <div class="col-12 text-center">
+            <h1 class="display-4 mb-4">My Library</h1>
+            <div class="row justify-content-center">
+                <div class="col-md-3">
+                    <div class="card bg-primary text-white mb-3">
+                        <div class="card-body text-center">
+                            <i class="fas fa-book-reader fa-2x mb-2"></i>
+                            <h5 class="card-title">12 Books</h5>
+                            <p class="card-text">Total Read</p>
+                        </div>
+                    </div>
                 </div>
-                <div class="book">
-                    <img src="/Bookbuddy_app/static/images/products/02.jpg" alt="Book 2">
+                <div class="col-md-3">
+                    <div class="card bg-success text-white mb-3">
+                        <div class="card-body text-center">
+                            <i class="fas fa-star fa-2x mb-2"></i>
+                            <h5 class="card-title">4.5</h5>
+                            <p class="card-text">Avg Rating</p>
+                        </div>
+                    </div>
                 </div>
-                <div class="book">
-                    <img src="/Bookbuddy_app/static/images/products/03.jpg" alt="Book 3">
+                <div class="col-md-3">
+                    <div class="card bg-info text-white mb-3">
+                        <div class="card-body text-center">
+                            <i class="fas fa-clock fa-2x mb-2"></i>
+                            <h5 class="card-title">120h</h5>
+                            <p class="card-text">Reading Time</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <div class="book-category">
-            <h2>Books I want to watch</h2>
-            <div class="book-grid">
-                <div class="book">
-                    <img src="/Bookbuddy_app/static/images/products/04.jpg" alt="Book 4">
+    <!-- Currently Reading Section -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="fas fa-bookmark text-primary"></i> Currently Reading</h2>
+                <button class="btn btn-outline-primary">View All</button>
+            </div>
+            <div class="row">
+                {% for book in books.current_books %}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <img src="{{ url_for('static', filename='images/products/' + book.image) }}" 
+                             class="card-img-top" alt="{{ book.title }}"
+                             style="height: 300px; object-fit: cover;">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ book.title }}</h5>
+                            <p class="card-text text-muted">{{ book.author }}</p>
+                            <div class="progress mb-3" style="height: 5px;">
+                                <div class="progress-bar" role="progressbar" 
+                                     style="width: {{ book.progress }}%" 
+                                     aria-valuenow="{{ book.progress }}" 
+                                     aria-valuemin="0" 
+                                     aria-valuemax="100">
+                                </div>
+                            </div>
+                            <p class="text-muted small mb-3">{{ book.progress }}% completed</p>
+                            <div class="d-flex justify-content-between gap-2">
+                                <button class="btn btn-sm btn-outline-primary flex-grow-1" onclick="showBookDetails({{ book.id }})">
+                                    <i class="fas fa-info-circle"></i> Details
+                                </button>
+                                <button class="btn btn-sm btn-outline-success flex-grow-1" onclick="addNote({{ book.id }})">
+                                    <i class="fas fa-edit"></i> Add Note
+                                </button>
+                                <button class="btn btn-sm btn-outline-info flex-grow-1" onclick="updateProgress({{ book.id }})">
+                                    <i class="fas fa-tasks"></i> Progress
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="book">
-                    <img src="/Bookbuddy_app/static/images/products/05.jpg" alt="Book 5">
-                </div>
-                <div class="book">
-                    <img src="/Bookbuddy_app/static/images/products/09.jpg" alt="Book 5">
-                </div>
+                {% endfor %}
             </div>
         </div>
+    </div>
 
-        <div class="book-category">
-            <h2>Books I have finished</h2>
-            <div class="book-grid">
-                <div class="book">
-                    <img src="/Bookbuddy_app/static/images/products/06.jpg" alt="Book 6">
+    <!-- Want to Read Section -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="fas fa-list text-success"></i> Want to Read</h2>
+                <button class="btn btn-outline-success">View All</button>
+            </div>
+            <div class="row">
+                {% for book in books.want_to_read %}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <img src="{{ url_for('static', filename='images/products/' + book.image) }}" 
+                             class="card-img-top" alt="{{ book.title }}"
+                             style="height: 300px; object-fit: cover;">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ book.title }}</h5>
+                            <p class="card-text text-muted">{{ book.author }}</p>
+                            <button class="btn btn-primary w-100" onclick="startReading({{ book.id }})">
+                                Start Reading
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                <div class="book">
-                    <img src="/Bookbuddy_app/static/images/products/07.jpg" alt="Book 7">
-                </div>
-                <div class="book">
-                    <img src="/Bookbuddy_app/static/images/products/08.jpg" alt="Book 8">
-                </div>
+                {% endfor %}
             </div>
         </div>
-    </section>
+    </div>
 
-    <script src="script.js"></script>
-</body>
-</html>
+    <!-- Completed Books Section -->
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="fas fa-check-circle text-info"></i> Completed</h2>
+                <button class="btn btn-outline-info">View All</button>
+            </div>
+            <div class="row">
+                {% for book in books.finished_books %}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <img src="{{ url_for('static', filename='images/products/' + book.image) }}" 
+                             class="card-img-top" alt="{{ book.title }}"
+                             style="height: 300px; object-fit: cover;">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ book.title }}</h5>
+                            <p class="card-text text-muted">{{ book.author }}</p>
+                            <div class="text-warning mb-3">
+                                {% for i in range(5) %}
+                                <i class="fas fa-star"></i>
+                                {% endfor %}
+                            </div>
+                            <button class="btn btn-outline-info w-100" onclick="showReview({{ book.id }})">
+                                View Review
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Include modals -->
+{% include 'components/book_details_modal.html' %}
+{% include 'components/add_note_modal.html' %}
+{% include 'components/update_progress_modal.html' %}
+{% endblock %}

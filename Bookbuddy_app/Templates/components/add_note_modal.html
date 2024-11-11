@@ -1,0 +1,29 @@
+<div class="modal fade" id="addNoteModal" tabindex="-1" aria-labelledby="addNoteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addNoteModalLabel">Add Note</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="noteBookId">
+                <div class="mb-3">
+                    <label for="noteTitle" class="form-label">Title</label>
+                    <input type="text" class="form-control" id="noteTitle" placeholder="Note title">
+                </div>
+                <div class="mb-3">
+                    <label for="noteContent" class="form-label">Note</label>
+                    <textarea class="form-control" id="noteContent" rows="5" placeholder="Write your thoughts about the book..."></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="pageNumber" class="form-label">Page Number (optional)</label>
+                    <input type="number" class="form-control" id="pageNumber" placeholder="Enter page number">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="saveNote()">Save Note</button>
+            </div>
+        </div>
+    </div>
+</div> 

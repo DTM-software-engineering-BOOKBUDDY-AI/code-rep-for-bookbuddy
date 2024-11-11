@@ -56,5 +56,79 @@ def book_details(book_id):
     # Add your logic to fetch book details
     return render_template('book_details.html', book_id=book_id)
 
+@app.route('/profile')
+def profile():
+    return render_template('profile.html')
+
+@app.route('/my_lib')
+def my_lib():
+    # Sample book collections
+    library_books = {
+        'current_books': [
+            {
+                'id': 1,
+                'title': "The Alchemist",
+                'author': "Paulo Coelho",
+                'progress': 45,
+                'image': "01.jpg"
+            },
+            {
+                'id': 2,
+                'title': "Dune",
+                'author': "Frank Herbert",
+                'progress': 30,
+                'image': "02.jpg"
+            },
+            {
+                'id': 3,
+                'title': "1984",
+                'author': "George Orwell",
+                'progress': 75,
+                'image': "03.jpg"
+            }
+        ],
+        'want_to_read': [
+            {
+                'id': 4,
+                'title': "The Midnight Library",
+                'author': "Matt Haig",
+                'image': "04.jpg"
+            },
+            {
+                'id': 5,
+                'title': "Project Hail Mary",
+                'author': "Andy Weir",
+                'image': "05.jpg"
+            },
+            {
+                'id': 6,
+                'title': "The Seven Husbands of Evelyn Hugo",
+                'author': "Taylor Jenkins Reid",
+                'image': "06.jpg"
+            }
+        ],
+        'finished_books': [
+            {
+                'id': 7,
+                'title': "The Thursday Murder Club",
+                'author': "Richard Osman",
+                'image': "07.jpg"
+            },
+            {
+                'id': 8,
+                'title': "Klara and the Sun",
+                'author': "Kazuo Ishiguro",
+                'image': "08.jpg"
+            },
+            {
+                'id': 9,
+                'title': "The Invisible Life of Addie LaRue",
+                'author': "V.E. Schwab",
+                'image': "09.jpg"
+            }
+        ]
+    }
+    return render_template('my_lib.html', books=library_books)
+
 if __name__ == '__main__':
     app.run(debug=True)
