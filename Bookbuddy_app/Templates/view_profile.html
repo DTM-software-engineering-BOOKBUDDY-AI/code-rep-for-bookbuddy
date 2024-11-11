@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}{{ profile_user.username }}'s Profile{% endblock %}
+
+{% block content %}
+<section class="user-profile">
+    <div class="profile-header">
+        <div class="profile-picture">
+            <img src="{{ profile_user.profile_picture or url_for('static', filename='images/transparent_avatar.png') }}" 
+                 alt="{{ profile_user.username }}'s profile picture">
+        </div>
+        <h1>{{ profile_user.username }}</h1>
+        {% if profile_user.bio %}
+            <p class="bio">{{ profile_user.bio }}</p>
+        {% endif %}
+    </div>
+
+    {% if profile_user.privacy == 'public' or (current_user.is_authenticated and current_user.id == profile_user.id) %}
+        <div class="profile-details">
+            {% if profile_user.gender %}
+                <p><strong>Gender:</strong> {{ profile_user.gender }}</p>
+            {% endif %}
+            {% if profile_user.language %}
+                <p><strong>Language:</strong> {{ profile_user.language }}</p>
+            {% endif %}
+            
+            <!-- Show reading lists/stats if you want -->
+            <div class="reading-stats">
+                <h3>Reading Activity</h3>
+                <!-- Add reading statistics here -->
+            </div>
+        </div>
+    {% else %}
+        <p>This profile is private.</p>
+    {% endif %}
+</section>
+{% endblock %} 

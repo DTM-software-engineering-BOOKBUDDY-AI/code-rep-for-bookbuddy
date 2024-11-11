@@ -4,7 +4,7 @@ from flask_migrate import Migrate
 from flask_login import LoginManager, current_user, login_user, logout_user, login_required
 from config import Config
 from extensions import db, login_manager
-from forms import LoginForm, SignupForm
+from forms import LoginForm, SignupForm, ProfileForm
 import logging
 
 # Set up logging
@@ -133,10 +133,46 @@ def book_details(book_id):
     # Add your logic to fetch book details
     return render_template('book_details.html', book_id=book_id)
 
-@app.route('/profile')
+@app.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
-    return render_template('profile.html')
+    form = ProfileForm()
+    
+    if form.validate_on_submit():
+        try:
+            current_user.username = form.username.data
+            current_user.gender = form.gender.data
+            current_user.bio = form.bio.data
+            current_user.birthday = form.birthday.data
+            current_user.telephone = form.telephone.data
+            current_user.language = form.language.data
+            current_user.privacy = form.privacy.data
+            current_user.friends_list = form.friends_list.data
+            current_user.block_list = form.block_list.data
+            current_user.hide_list = form.hide_list.data
+            
+            db.session.commit()
+            flash('Profile updated successfully! 🎉', 'success')
+            return redirect(url_for('profile'))
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Error updating profile: {str(e)} ❌', 'error')
+            logger.error(f"Profile update error: {str(e)}")
+    
+    elif request.method == 'GET':
+        # Pre-populate form with current user data
+        form.username.data = current_user.username
+        form.gender.data = current_user.gender
+        form.bio.data = current_user.bio
+        form.birthday.data = current_user.birthday
+        form.telephone.data = current_user.telephone
+        form.language.data = current_user.language
+        form.privacy.data = current_user.privacy
+        form.friends_list.data = current_user.friends_list
+        form.block_list.data = current_user.block_list
+        form.hide_list.data = current_user.hide_list
+
+    return render_template('profile.html', form=form, user=current_user)
 
 @app.route('/my_lib')
 @login_required
@@ -224,6 +260,30 @@ def test_db():
         return 'Database connection successful!'
     except Exception as e:
         return f'Database error: {str(e)}'
+
+@app.route('/search_user', methods=['GET'])
+def search_user():
+    username = request.args.get('username', '')
+    if username:
+        user = User.query.filter_by(username=username).first()
+        if user:
+            # Return only non-sensitive information
+            return {
+                'found': True,
+                'username': user.username,
+                'bio': user.bio,
+                'profile_picture': user.profile_picture
+            }
+    return {'found': False}
+
+@app.route('/profile/<username>')
+def view_profile(username):
+    user = User.query.filter_by(username=username).first_or_404()
+    # Don't show private profiles unless it's the current user
+    if user.privacy == 'private' and (not current_user.is_authenticated or current_user.id != user.id):
+        flash('This profile is private.', 'error')
+        return redirect(url_for('homepage'))
+    return render_template('view_profile.html', profile_user=user)
 
 if __name__ == '__main__':
     with app.app_context():

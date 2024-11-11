@@ -13,48 +13,111 @@
         <img src="{{ url_for('static', filename='images/transparent_avatar.png') }}" alt="Profile Picture">
         <p>Edit picture</p>
     </div>
-    <form>
+    <form method="POST" action="{{ url_for('profile') }}">
+        {{ form.csrf_token }}
+        {% if form.errors %}
+            <div class="alert alert-danger">
+                Please correct the following errors:
+                <ul>
+                    {% for field, errors in form.errors.items() %}
+                        {% for error in errors %}
+                            <li>{{ field }}: {{ error }}</li>
+                        {% endfor %}
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
         <div class="form-group">
             <label for="username">Username</label>
-            <input type="text" id="username" value="Bookbuddy05">
+            {{ form.username(class="form-control", id="username") }}
+            {% if form.username.errors %}
+                {% for error in form.username.errors %}
+                    <span class="text-danger">{{ error }}</span>
+                {% endfor %}
+            {% endif %}
         </div>
         <div class="form-group">
             <label for="gender">Gender</label>
-            <input type="text" id="gender" value="Female">
+            {{ form.gender(class="form-control") }}
+            {% if form.gender.errors %}
+                {% for error in form.gender.errors %}
+                    <span class="text-danger">{{ error }}</span>
+                {% endfor %}
+            {% endif %}
         </div>
         <div class="form-group">
             <label for="bio">Bio</label>
-            <input type="text" id="bio" value="I am rooted, but I flow">
+            {{ form.bio(class="form-control", id="bio") }}
+            {% if form.bio.errors %}
+                {% for error in form.bio.errors %}
+                    <span class="text-danger">{{ error }}</span>
+                {% endfor %}
+            {% endif %}
         </div>
         <div class="form-group">
-            <label for="birthdate">BirthDate</label>
-            <input type="text" id="birthdate" value="22/09/2002">
+            <label for="birthday">Birthday</label>
+            {{ form.birthday(class="form-control", id="birthday") }}
+            {% if form.birthday.errors %}
+                {% for error in form.birthday.errors %}
+                    <span class="text-danger">{{ error }}</span>
+                {% endfor %}
+            {% endif %}
         </div>
         <div class="form-group">
             <label for="telephone">Telephone</label>
-            <input type="text" id="telephone" value="+39 337865340">
+            {{ form.telephone(class="form-control", id="telephone") }}
+            {% if form.telephone.errors %}
+                {% for error in form.telephone.errors %}
+                    <span class="text-danger">{{ error }}</span>
+                {% endfor %}
+            {% endif %}
         </div>
         <div class="form-group">
             <label for="language">Language</label>
-            <input type="text" id="language" value="English">
+            {{ form.language(class="form-control", id="language") }}
+            {% if form.language.errors %}
+                {% for error in form.language.errors %}
+                    <span class="text-danger">{{ error }}</span>
+                {% endfor %}
+            {% endif %}
         </div>
 
         <h2>Profile Privacy</h2>
         <div class="form-group">
             <label for="privacy">Account Privacy</label>
-            <input type="text" id="privacy" value="Private">
+            {{ form.privacy(class="form-control", id="privacy") }}
+            {% if form.privacy.errors %}
+                {% for error in form.privacy.errors %}
+                    <span class="text-danger">{{ error }}</span>
+                {% endfor %}
+            {% endif %}
         </div>
         <div class="form-group">
-            <label for="friends-list">Close friends list</label>
-            <input type="text" id="friends-list" value="Cara01, David1998">
+            <label for="friends_list">Close friends list</label>
+            {{ form.friends_list(class="form-control", id="friends_list") }}
+            {% if form.friends_list.errors %}
+                {% for error in form.friends_list.errors %}
+                    <span class="text-danger">{{ error }}</span>
+                {% endfor %}
+            {% endif %}
         </div>
         <div class="form-group">
-            <label for="block-list">Block list</label>
-            <input type="text" id="block-list" value="Kevin_04">
+            <label for="block_list">Block list</label>
+            {{ form.block_list(class="form-control", id="block_list") }}
+            {% if form.block_list.errors %}
+                {% for error in form.block_list.errors %}
+                    <span class="text-danger">{{ error }}</span>
+                {% endfor %}
+            {% endif %}
         </div>
         <div class="form-group">
-            <label for="hide-list">Hide list</label>
-            <input type="text" id="hide-list">
+            <label for="hide_list">Hide list</label>
+            {{ form.hide_list(class="form-control", id="hide_list") }}
+            {% if form.hide_list.errors %}
+                {% for error in form.hide_list.errors %}
+                    <span class="text-danger">{{ error }}</span>
+                {% endfor %}
+            {% endif %}
         </div>
         
         <button type="submit" class="btn btn-primary mt-4">Save Changes</button>

@@ -1,8 +1,9 @@
 from flask_wtf import FlaskForm  # Base form class from Flask-WTF
-from wtforms import StringField, PasswordField, SubmitField, EmailField, SelectField, DateField  # Form field types
-from wtforms.validators import DataRequired, Email, Length, EqualTo, ValidationError  # Validators
+from wtforms import StringField, PasswordField, SubmitField, EmailField, SelectField, DateField, TextAreaField  # Form field types
+from wtforms.validators import DataRequired, Email, Length, EqualTo, ValidationError, Optional  # Validators
 from models import User  # Import User model for validation
 from datetime import date
+from flask_login import current_user
 
 class SignupForm(FlaskForm):
     # Username field
@@ -89,4 +90,42 @@ class LoginForm(FlaskForm):
     ])
 
     # Submit button
-    submit = SubmitField('Log In') 
+    submit = SubmitField('Log In')
+
+
+class ProfileForm(FlaskForm):
+    # Define gender choices as a constant
+    GENDER_CHOICES = [
+        ('', 'Select Gender'),
+        ('male', 'Male'),
+        ('female', 'Female'),
+        ('non-binary', 'Non-binary'),
+        ('prefer_not_to_say', 'Prefer not to say')
+    ]
+
+    username = StringField('Username', validators=[DataRequired()])
+    gender = SelectField(
+        'Gender', 
+        choices=GENDER_CHOICES,
+        validators=[Optional()]
+    )
+    bio = TextAreaField('Bio', validators=[Optional()])
+    birthday = StringField('Birthday', validators=[Optional()])
+    telephone = StringField('Telephone', validators=[Optional()])
+    language = StringField('Language', validators=[Optional()])
+    privacy = SelectField(
+        'Account Privacy', 
+        choices=[
+            ('public', 'Public'),
+            ('private', 'Private')
+        ], 
+        validators=[Optional()]
+    )
+    friends_list = StringField('Friends List', validators=[Optional()])
+    block_list = StringField('Block List', validators=[Optional()])
+    hide_list = StringField('Hide List', validators=[Optional()])
+
+    def validate_username(self, username):
+        user = User.query.filter_by(username=username.data).first()
+        if user and user.id != current_user.id:  # Allow keeping same username
+            raise ValidationError('This username is already taken. Please choose a different one.')

@@ -10,7 +10,7 @@ class User(db.Model, UserMixin):
     # Authentication fields
     email = db.Column(db.String(120), unique=True, nullable=False)
     username = db.Column(db.String(80), unique=True, nullable=False)
-    password_hash = db.Column(db.String(128), nullable=False)
+    password_hash = db.Column(db.String(128))
     
     # Profile fields
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
@@ -18,8 +18,14 @@ class User(db.Model, UserMixin):
     bio = db.Column(db.Text)
     
     # Add new required fields
-    gender = db.Column(db.String(20), nullable=False, default='prefer_not_to_say')
-    birthday = db.Column(db.Date, nullable=False, default=date(2000, 1, 1))  # Default date
+    gender = db.Column(db.String(20))
+    birthday = db.Column(db.String(20))  # or db.Date, depending on your needs
+    telephone = db.Column(db.String(20))
+    language = db.Column(db.String(20))
+    privacy = db.Column(db.String(20), default='public')
+    friends_list = db.Column(db.Text)  # or create a separate association table
+    block_list = db.Column(db.Text)    # or create a separate association table
+    hide_list = db.Column(db.Text)     # or create a separate association table
     
     # Relationships
     preferences = db.relationship('UserPreferences', backref='user', uselist=False)

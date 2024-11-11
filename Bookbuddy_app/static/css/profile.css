@@ -147,3 +147,45 @@ h2 {
         transform: translateX(0);
     }
 }
+
+.form-group select {
+    width: 100%;
+    padding: 8px;
+    margin: 8px 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: white;
+}
+
+.form-group select:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+}
+
+.text-danger {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+.toast-container {
+    z-index: 1050;
+}
+
+.toast {
+    opacity: 1 !important;
+}
+
+.bg-success {
+    background-color: #28a745 !important;
+}
+
+.bg-danger {
+    background-color: #dc3545 !important;
+}
+
+.toast-body {
+    padding: 0.75rem 1.25rem;
+    font-size: 0.9rem;
+}
