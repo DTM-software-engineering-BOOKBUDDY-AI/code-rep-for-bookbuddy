@@ -1,21 +1,34 @@
-from flask import Flask, render_template, url_for, redirect
-from flask_login import LoginManager, UserMixin, current_user # type: ignore
+from flask import Flask, render_template, url_for, redirect, flash, request
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
+from flask_login import LoginManager, current_user, login_user, logout_user, login_required
+from config import Config
+from extensions import db, login_manager
+from forms import LoginForm, SignupForm
+import logging
+
+# Set up logging
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'your-secret-key-here'  # Replace with a real secret key
-login_manager = LoginManager()
+app.config.from_object(Config)
+
+# Initialize extensions with app
+db.init_app(app)
+migrate = Migrate(app, db)
 login_manager.init_app(app)
 
-class User(UserMixin):
-    pass
+# Import models after db initialization
+from models import User, Book, ReadingList, UserPreferences
 
 @login_manager.user_loader
 def load_user(user_id):
-    return None  # For now, return None as we don't have user authentication yet
+    return User.query.get(int(user_id))
 
 @app.route('/')
 @app.route('/home')
-def hello_world():
+def homepage():
     return render_template("homepage.html")
 
 @app.route('/form' )
@@ -45,11 +58,75 @@ def testbase():
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
-    return render_template("signup.html")
+    if current_user.is_authenticated:
+        return redirect(url_for('homepage'))
+    
+    form = SignupForm()
+    logger.debug(f"Form submitted: {request.method}")
+    
+    if form.validate_on_submit():
+        logger.debug("Form validated successfully")
+        try:
+            # Create new user with additional fields
+            user = User(
+                username=form.username.data,
+                email=form.email.data,
+                gender=form.gender.data,
+                birthday=form.birthday.data
+            )
+            user.set_password(form.password.data)
+            logger.debug(f"Created user object: {user.username}")
+            
+            # Create preferences
+            preferences = UserPreferences(user=user)
+            logger.debug("Created preferences object")
+            
+            # Add to database
+            db.session.add(user)
+            db.session.add(preferences)
+            logger.debug("Added user and preferences to session")
+            
+            # Commit changes
+            db.session.commit()
+            logger.info(f"Successfully created user: {user.username}")
+            
+            flash('Registration successful! Please log in.', 'success')
+            return redirect(url_for('login'))
+            
+        except Exception as e:
+            db.session.rollback()
+            logger.error(f"Error creating user: {str(e)}")
+            flash(f'Error creating account: {str(e)}', 'error')
+    else:
+        if form.errors:
+            logger.debug(f"Form validation errors: {form.errors}")
+    
+    return render_template('signup.html', form=form)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    return render_template("login.html")
+    if current_user.is_authenticated:
+        return redirect(url_for('homepage'))
+    
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        if user and user.check_password(form.password.data):
+            login_user(user)
+            next_page = request.args.get('next')
+            flash('Login successful!', 'success')
+            return redirect(next_page or url_for('homepage'))
+        else:
+            flash('Invalid email or password', 'error')
+    
+    return render_template('login.html', form=form)
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash('You have been logged out.', 'info')
+    return redirect(url_for('homepage'))
 
 @app.route('/book/details/<int:book_id>')
 def book_details(book_id):
@@ -57,10 +134,12 @@ def book_details(book_id):
     return render_template('book_details.html', book_id=book_id)
 
 @app.route('/profile')
+@login_required
 def profile():
     return render_template('profile.html')
 
 @app.route('/my_lib')
+@login_required
 def my_lib():
     # Sample book collections
     library_books = {
@@ -130,5 +209,23 @@ def my_lib():
     }
     return render_template('my_lib.html', books=library_books)
 
+@app.route('/check_users')
+def check_users():
+    if app.debug:  # Only allow in debug mode
+        users = User.query.all()
+        return render_template('check_users.html', users=users)
+    return "Not available in production", 403
+
+@app.route('/test_db')
+def test_db():
+    try:
+        # Test database connection
+        db.session.execute('SELECT 1')
+        return 'Database connection successful!'
+    except Exception as e:
+        return f'Database error: {str(e)}'
+
 if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()  # Create database tables
     app.run(debug=True)
