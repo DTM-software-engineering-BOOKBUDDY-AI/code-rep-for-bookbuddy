@@ -1,9 +1,10 @@
 from flask_wtf import FlaskForm  # Base form class from Flask-WTF
 from wtforms import StringField, PasswordField, SubmitField, EmailField, SelectField, DateField, TextAreaField  # Form field types
-from wtforms.validators import DataRequired, Email, Length, EqualTo, ValidationError, Optional  # Validators
+from wtforms.validators import DataRequired, Email, Length, EqualTo, ValidationError, Optional, Regexp  # Validators
 from models import User  # Import User model for validation
 from datetime import date
 from flask_login import current_user
+from bleach import clean
 
 class SignupForm(FlaskForm):
     # Username field
@@ -109,9 +110,15 @@ class ProfileForm(FlaskForm):
         choices=GENDER_CHOICES,
         validators=[Optional()]
     )
-    bio = TextAreaField('Bio', validators=[Optional()])
+    bio = TextAreaField('Bio', validators=[
+        Optional(),
+        Length(max=500, message="Bio must be less than 500 characters")
+    ])
     birthday = StringField('Birthday', validators=[Optional()])
-    telephone = StringField('Telephone', validators=[Optional()])
+    telephone = StringField('Telephone', validators=[
+        Optional(),
+        Regexp(r'^\+?1?\d{9,15}$', message="Invalid phone number format")
+    ])
     language = StringField('Language', validators=[Optional()])
     privacy = SelectField(
         'Account Privacy', 
@@ -129,3 +136,6 @@ class ProfileForm(FlaskForm):
         user = User.query.filter_by(username=username.data).first()
         if user and user.id != current_user.id:  # Allow keeping same username
             raise ValidationError('This username is already taken. Please choose a different one.')
+
+    def validate_bio(self, field):
+        field.data = clean(field.data)

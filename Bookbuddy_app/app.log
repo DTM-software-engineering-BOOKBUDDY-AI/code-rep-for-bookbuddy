@@ -1,0 +1,35 @@
+2024-11-11 17:08:33,985 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2024-11-11 17:08:33,987 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2024-11-11 17:08:33,996 - werkzeug - INFO -  * Restarting with watchdog (windowsapi)
+2024-11-11 17:08:34,790 - werkzeug - WARNING -  * Debugger is active!
+2024-11-11 17:08:34,792 - werkzeug - INFO -  * Debugger PIN: 953-731-876
+2024-11-11 17:08:49,741 - werkzeug - INFO - 127.0.0.1 - - [11/Nov/2024 17:08:49] "GET /form HTTP/1.1" 200 -
+2024-11-11 17:08:49,850 - werkzeug - INFO - 127.0.0.1 - - [11/Nov/2024 17:08:49] "[36mGET /static/css/form.css HTTP/1.1[0m" 304 -
+2024-11-11 17:08:49,852 - werkzeug - INFO - 127.0.0.1 - - [11/Nov/2024 17:08:49] "[36mGET /static/css/auth.css HTTP/1.1[0m" 304 -
+2024-11-11 17:08:49,853 - werkzeug - INFO - 127.0.0.1 - - [11/Nov/2024 17:08:49] "[36mGET /static/js/form.js HTTP/1.1[0m" 304 -
+2024-11-11 17:08:51,135 - werkzeug - INFO - 127.0.0.1 - - [11/Nov/2024 17:08:51] "GET /form HTTP/1.1" 200 -
+2024-11-11 17:08:51,164 - werkzeug - INFO - 127.0.0.1 - - [11/Nov/2024 17:08:51] "[36mGET /static/js/form.js HTTP/1.1[0m" 304 -
+2024-11-11 17:08:51,164 - werkzeug - INFO - 127.0.0.1 - - [11/Nov/2024 17:08:51] "[36mGET /static/css/auth.css HTTP/1.1[0m" 304 -
+2024-11-11 17:08:51,165 - werkzeug - INFO - 127.0.0.1 - - [11/Nov/2024 17:08:51] "[36mGET /static/css/form.css HTTP/1.1[0m" 304 -
+2024-11-11 17:08:51,714 - werkzeug - INFO - 127.0.0.1 - - [11/Nov/2024 17:08:51] "GET /form HTTP/1.1" 200 -
+2024-11-11 17:08:51,753 - werkzeug - INFO - 127.0.0.1 - - [11/Nov/2024 17:08:51] "[36mGET /static/css/auth.css HTTP/1.1[0m" 304 -
+2024-11-11 17:08:51,755 - werkzeug - INFO - 127.0.0.1 - - [11/Nov/2024 17:08:51] "[36mGET /static/css/form.css HTTP/1.1[0m" 304 -
+2024-11-11 17:08:51,757 - werkzeug - INFO - 127.0.0.1 - - [11/Nov/2024 17:08:51] "[36mGET /static/js/form.js HTTP/1.1[0m" 304 -
+2024-11-11 17:09:10,839 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2024-11-11 17:09:10,840 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2024-11-11 17:09:10,853 - werkzeug - INFO -  * Restarting with watchdog (windowsapi)
+2024-11-11 17:09:11,613 - werkzeug - WARNING -  * Debugger is active!
+2024-11-11 17:09:11,615 - werkzeug - INFO -  * Debugger PIN: 953-731-876
+2024-11-11 17:10:18,537 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2024-11-11 17:10:18,537 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2024-11-11 17:10:18,547 - werkzeug - INFO -  * Restarting with watchdog (windowsapi)
+2024-11-11 17:10:19,300 - werkzeug - WARNING -  * Debugger is active!
+2024-11-11 17:10:19,302 - werkzeug - INFO -  * Debugger PIN: 953-731-876
+2024-11-11 17:10:45,462 - werkzeug - INFO -  * Detected change in 'D:\\Bookbuddy-repository\\code-rep-for-bookbuddy\\Bookbuddy_app\\app.py', reloading
+2024-11-11 17:10:45,463 - werkzeug - INFO -  * Detected change in 'D:\\Bookbuddy-repository\\code-rep-for-bookbuddy\\Bookbuddy_app\\app.py', reloading
+2024-11-11 17:10:45,463 - werkzeug - INFO -  * Detected change in 'D:\\Bookbuddy-repository\\code-rep-for-bookbuddy\\Bookbuddy_app\\app.py', reloading
+2024-11-11 17:10:45,464 - werkzeug - INFO -  * Detected change in 'D:\\Bookbuddy-repository\\code-rep-for-bookbuddy\\Bookbuddy_app\\app.py', reloading
+2024-11-11 17:10:46,493 - werkzeug - INFO -  * Restarting with watchdog (windowsapi)

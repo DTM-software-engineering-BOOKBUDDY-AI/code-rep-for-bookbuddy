@@ -48,6 +48,8 @@
         <div class="form-group">
             <label for="bio">Bio</label>
             {{ form.bio(class="form-control", id="bio") }}
+            <small class="text-muted">Maximum 500 characters</small>
+            <div id="charCount" class="text-muted">0/500</div>
             {% if form.bio.errors %}
                 {% for error in form.bio.errors %}
                     <span class="text-danger">{{ error }}</span>
@@ -124,3 +126,10 @@
     </form>
 </section>
 {% endblock %}
+
+<script>
+document.getElementById('bio').addEventListener('input', function() {
+    document.getElementById('charCount').textContent = 
+        this.value.length + '/500';
+});
+</script>
