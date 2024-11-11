@@ -24,7 +24,20 @@ def form():
 
 @app.route('/recommendation')
 def recommendation():
-    return render_template("recommendation.html")
+    # Create a sample book object (later this would come from your database)
+    book = {
+        'id': 1,
+        'title': "Don Quixote",
+        'author': "Miguel de Cervantes",
+        'cover': "https://covers.openlibrary.org/b/id/8224816-L.jpg",
+        'rating': "4.5",
+        'genre': "Novel",
+        'language': "Spanish",
+        'year': "1605",
+        'summary': "Don Quixote is a Spanish novel that follows the adventures of a noble who, after reading too many chivalric romances, loses his sanity...",
+        'fullSummary': "The story tells the adventures of a nobleman who reads so many chivalric romances that he loses his mind and decides to become a knight-errant, recruiting a simple farmer, Sancho Panza, as his squire..."
+    }
+    return render_template("recommendation.html", book=book)
 
 @app.route('/testbase')
 def testbase():
@@ -37,6 +50,11 @@ def signup():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     return render_template("login.html")
+
+@app.route('/book/details/<int:book_id>')
+def book_details(book_id):
+    # Add your logic to fetch book details
+    return render_template('book_details.html', book_id=book_id)
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -1,58 +1,109 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Book Recommendation</title>
-    <link rel="stylesheet" href="/static/css/recom.css">
-</head>
-<body>
-    <div class="container">
-        <header>
-            <!-- Left-aligned header with image and menu items -->
-            <img src="https://example.com/header-image.jpg" alt="Header Image" id="header-image">
-            <nav>
-                <ul>
-                    <li><a href="#">Home</a></li>
-                    <li><a href="#">About Us</a></li>
-                    <li><a href="#">Books</a></li>
-                    <li><a href="#">Contact</a></li>
-                </ul>
-            </nav>
-        </header>
+{% extends "base.html" %}
 
-        <div class="content">
-            <h1>This Is the Book that We Recommend</h1>
+{% block title %}Book Recommendation{% endblock %}
 
-            <div class="slideshow">
-                <button class="arrow" id="prev" onclick="prevImage()">&#9664;</button>
-                <img id="book-cover" src="https://covers.openlibrary.org/b/id/8224816-L.jpg" alt="Don Quixote">
-                <button class="arrow" id="next" onclick="nextImage()">&#9654;</button>
+{% block extra_css %}
+<link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+<link rel="stylesheet" href="/static/css/recom.css">
+{% endblock %}
+
+{% block content %}
+<main>
+    <section class="recommendation-section">
+        <div class="container py-5">
+            <!-- Title Section -->
+            <div class="text-center mb-5" data-aos="fade-down">
+                <h2 class="display-4 fw-bold text-primary">Your Personalized Recommendations</h2>
+                <p class="lead text-muted">Discover books tailored just for you</p>
             </div>
 
-            <div class="book-info">
-                <div class="details">
-                    <p><strong>Name:</strong> Don Quixote</p>
-                    <p><strong>Author:</strong> Miguel de Cervantes</p>
-                    <p><strong>Language:</strong> Spanish</p>
-                    <p><strong>Genre:</strong> Novel</p>
-                    <p><strong>Publication Date:</strong> 1605</p>
-                    <p><strong>Goodreads Rating:</strong> 3.87</p>
-                </div>
+            <!-- Book Carousel Section -->
+            <div class="book-carousel-container" data-aos="fade-up">
+                <!-- Navigation Arrows -->
+                <button class="carousel-arrow prev" onclick="prevImage()">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                
+                <!-- Book Display -->
+                <div class="book-content">
+                    <div class="book-title text-center mb-4">
+                        <h3 class="display-5" id="book-name">Don Quixote</h3>
+                        <p class="lead" id="book-author">by Miguel de Cervantes</p>
+                    </div>
+                    
+                    <div class="book-image-container">
+                        <img id="book-cover" src="https://covers.openlibrary.org/b/id/8224816-L.jpg" 
+                             alt="Don Quixote" class="book-image">
+                    </div>
+                    
+                    <div class="book-details mt-4">
+                        <!-- Quick Stats -->
+                        <div class="quick-stats">
+                            <div class="stat-item">
+                                <i class="fas fa-star text-warning"></i>
+                                <span>4.5</span>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-book"></i>
+                                <span>Novel</span>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-language"></i>
+                                <span>Spanish</span>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-calendar"></i>
+                                <span>1605</span>
+                            </div>
+                        </div>
 
-                <div id="summary-box">
-                    <p id="summary-preview">Don Quixote is a Spanish novel by Miguel de Cervantes...</p>
-                    <button class="summary-btn" onclick="toggleSummary()">&#9660;</button>
-                    <div id="full-summary" class="hidden">
-                        <p>The story tells the adventures of a nobleman who reads so many chivalric romances that he loses his mind and decides to become a knight-errant...</p>
+                        <!-- Summary -->
+                        <div class="book-summary mt-4">
+                            <p id="summary-preview">
+                                Don Quixote is a Spanish novel that follows the adventures of a noble who, 
+                                after reading too many chivalric romances, loses his sanity...
+                                <button class="btn btn-link btn-sm" onclick="toggleSummary()">
+                                    <span id="read-more-text">Read More</span>
+                                    <i class="fas fa-chevron-down" id="summary-icon"></i>
+                                </button>
+                            </p>
+                            <div id="full-summary" class="hidden">
+                                <p>The story tells the adventures of a nobleman who reads so many chivalric romances 
+                                that he loses his mind and decides to become a knight-errant, recruiting a simple 
+                                farmer, Sancho Panza, as his squire...</p>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="action-buttons mt-4">
+                            <button class="btn btn-primary">
+                                <i class="fas fa-heart me-2"></i>Add to Favorites
+                            </button>
+                            <button onclick="goToDetails()" class="btn btn-outline-primary">
+                                <i class="fas fa-info-circle me-2"></i>More Details
+                            </button>
+                        </div>
                     </div>
                 </div>
 
-                <button class="fav-btn">Add to Favourite</button>
+                <!-- Navigation Arrows -->
+                <button class="carousel-arrow next" onclick="nextImage()">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
             </div>
         </div>
-    </div>
+    </section>
+</main>
+{% endblock %}
 
-    <script src="/static/js/recommendation.js"></script>
-</body>
-</html>
+{% block extra_js %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+    AOS.init({
+        duration: 1000,
+        once: true
+    });
+</script>
+<script src="{{ url_for('static', filename='js/recommendation.js') }}"></script>
+{% endblock %}
