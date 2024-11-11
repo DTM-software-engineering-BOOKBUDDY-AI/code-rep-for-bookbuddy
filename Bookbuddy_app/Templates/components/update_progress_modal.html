@@ -1,1 +1,33 @@
- 
+<div class="modal fade" id="updateProgressModal" tabindex="-1" aria-labelledby="updateProgressModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateProgressModalLabel">Update Reading Progress</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="progressForm">
+                    <div class="mb-3">
+                        <label for="currentPage" class="form-label">Current Page</label>
+                        <input type="number" class="form-control" id="currentPage">
+                    </div>
+                    <div class="progress mb-3">
+                        <div class="progress-bar" role="progressbar" style="width: 0%"></div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="readingStatus" class="form-label">Status</label>
+                        <select class="form-select" id="readingStatus">
+                            <option value="reading">Currently Reading</option>
+                            <option value="completed">Completed</option>
+                            <option value="paused">Paused</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="saveProgress()">Save Progress</button>
+            </div>
+        </div>
+    </div>
+</div> 
