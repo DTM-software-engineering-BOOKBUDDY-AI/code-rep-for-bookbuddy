@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="search-container">
+    <input type="text" id="searchInput" placeholder="Search for books...">
+    <button onclick="searchBooks()">Search</button>
+</div>
+
+<div id="searchResults" class="book-grid"></div>
+
+<script>
+async function searchBooks() {
+    const query = document.getElementById('searchInput').value;
+    try {
+        const response = await fetch(`/books/search?q=${encodeURIComponent(query)}`);
+        const books = await response.json();
+        displayBooks(books);
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
+function displayBooks(books) {
+    const container = document.getElementById('searchResults');
+    container.innerHTML = books.map(book => `
+        <div class="book-card">
+            <img src="${book.thumbnail || '/static/images/no-cover.png'}" alt="${book.title}">
+            <h3>${book.title}</h3>
+            <p>${book.authors?.join(', ') || 'Unknown author'}</p>
+            <a href="/books/book/${book.id}" class="btn btn-primary">View Details</a>
+        </div>
+    `).join('');
+}
+</script>
+{% endblock %} 

@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+
+{% block title %}Search Results - {{ query }}{% endblock %}
+
+{% block extra_css %}
+<style>
+.book-card {
+    transition: transform 0.2s;
+    height: 100%;
+    border: 1px solid rgba(0,0,0,.125);
+}
+
+.book-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+/* Updated image wrapper and image styles */
+.card-img-wrapper {
+    height: 300px;
+    position: relative;
+    background-color: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;  /* Reduced padding */
+}
+
+.book-card img {
+    height: 100%;
+    width: auto;
+    max-width: 100%;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+}
+
+.book-card:hover img {
+    transform: scale(1.05);
+}
+
+/* Rest of your existing styles */
+.card-body {
+    padding: 1.25rem;
+}
+
+.card-title {
+    font-size: 1.1rem;
+    line-height: 1.4;
+    margin-bottom: 0.5rem;
+    height: 3.2rem;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.text-muted {
+    font-size: 0.9rem;
+}
+
+.rating-stars {
+    color: #ffc107;
+    font-size: 0.9rem;
+}
+
+/* Add responsive breakpoints */
+@media (max-width: 768px) {
+    .card-img-wrapper {
+        height: 250px;
+    }
+}
+
+@media (max-width: 576px) {
+    .card-img-wrapper {
+        height: 200px;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <h2 class="mb-4">Search Results for "{{ query }}"</h2>
+    
+    {% if books %}
+        <div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4">
+            {% for book in books %}
+            <div class="col">
+                <div class="card h-100 book-card">
+                    <div class="card-img-wrapper">
+                        <img src="{{ book.thumbnail or url_for('static', filename='images/no-cover.png') }}" 
+                             class="card-img-top" 
+                             alt="{{ book.title }}"
+                             loading="lazy"
+                             onerror="this.src='{{ url_for('static', filename='images/no-cover.png') }}'">
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title" title="{{ book.title }}">{{ book.title }}</h5>
+                        <p class="card-text">
+                            <small class="text-muted">
+                                {{ book.authors|join(', ') if book.authors else 'Unknown author' }}
+                            </small>
+                        </p>
+                        {% if book.rating %}
+                        <div class="mb-2 rating-stars">
+                            {{ "★" * book.rating }}{{ "☆" * (5 - book.rating) }}
+                            <small class="text-muted">({{ book.ratings_count }})</small>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="card-footer bg-transparent border-top-0">
+                        <a href="{{ url_for('books.book_details', book_id=book.id) }}" 
+                           class="btn btn-primary btn-sm w-100">View Details</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            <h4 class="alert-heading">No Results Found</h4>
+            <p>We couldn't find any books matching your search for "{{ query }}".</p>
+            <hr>
+            <p class="mb-0">Try:</p>
+            <ul>
+                <li>Using different keywords</li>
+                <li>Checking your spelling</li>
+                <li>Using more general terms</li>
+            </ul>
+        </div>
+    {% endif %}
+</div>
+{% endblock %} 

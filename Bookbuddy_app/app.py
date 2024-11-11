@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, redirect, flash, request
+from flask import Flask, render_template, url_for, redirect, flash, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager, current_user, login_user, logout_user, login_required
@@ -6,6 +6,11 @@ from config import Config
 from extensions import db, login_manager
 from forms import LoginForm, SignupForm, ProfileForm
 import logging
+from routes.books import books_bp
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Set up logging
 logging.basicConfig(level=logging.DEBUG)
@@ -13,6 +18,9 @@ logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 app.config.from_object(Config)
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'your-secret-key')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///bookbuddy.db')
+app.config['GOOGLE_BOOKS_API_KEY'] = os.getenv('GOOGLE_BOOKS_API_KEY')
 
 # Initialize extensions with app
 db.init_app(app)
@@ -21,6 +29,9 @@ login_manager.init_app(app)
 
 # Import models after db initialization
 from models import User, Book, ReadingList, UserPreferences
+
+# Register the blueprint
+app.register_blueprint(books_bp, url_prefix='/books')
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -127,11 +138,6 @@ def logout():
     logout_user()
     flash('You have been logged out.', 'info')
     return redirect(url_for('homepage'))
-
-@app.route('/book/details/<int:book_id>')
-def book_details(book_id):
-    # Add your logic to fetch book details
-    return render_template('book_details.html', book_id=book_id)
 
 @app.route('/profile', methods=['GET', 'POST'])
 @login_required
@@ -284,6 +290,10 @@ def view_profile(username):
         flash('This profile is private.', 'error')
         return redirect(url_for('homepage'))
     return render_template('view_profile.html', profile_user=user)
+
+@app.route('/book_search')
+def book_search():
+    return render_template('search_results.html')
 
 if __name__ == '__main__':
     with app.app_context():

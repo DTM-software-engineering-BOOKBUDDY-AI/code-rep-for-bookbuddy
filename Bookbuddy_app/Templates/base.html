@@ -33,10 +33,24 @@
                 </ul>
                 
                 <!-- Search bar -->
-                <form class="d-flex mx-auto" style="width: 50%;">
-                    <input class="form-control me-2" type="search" placeholder="Search">
-                    <button class="btn btn-outline-success" type="submit">Search</button>
-                </form>
+                <div class="search-form-container mx-auto">
+                    <form class="d-flex"  action="{{ url_for('books.search_results') }}" method="GET">
+                        <div class="input-group">
+                            <input 
+                                class="form-control" 
+                                type="search" 
+                                placeholder="Search books or authors..." 
+                                id="searchInput"
+                                name="q"
+                                autocomplete="off"
+                                required
+                                value="{{ request.args.get('q', '') }}"
+                                oninput="handleSearchInput(event)">
+                            <button class="btn btn-outline-success" type="submit">Search</button>
+                        </div>
+                    </form>
+                    <div class="search-results-dropdown" id="searchResults"></div>
+                </div>
                 
                 <!-- Right side items -->
                 <ul class="navbar-nav ms-auto">
@@ -149,6 +163,153 @@
         });
         toastList.forEach(toast => toast.show());
     });
+    </script>
+
+    <script>
+    let searchTimeout;
+    let selectedIndex = -1;
+
+    function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+
+    async function handleSearchInput(event) {
+        const query = event.target.value;
+        const resultsDiv = document.getElementById('searchResults');
+        
+        if (!query.trim()) {
+            resultsDiv.classList.remove('show');
+            return;
+        }
+        
+        // Show loading state
+        resultsDiv.innerHTML = `
+            <div class="search-result-item">
+                <div class="spinner-border spinner-border-sm" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                Searching...
+            </div>`;
+        resultsDiv.classList.add('show');
+        
+        try {
+            const response = await fetch(`/books/search?q=${encodeURIComponent(query)}`);
+            const data = await response.json();
+            
+            if (data && data.length > 0) {
+                const resultsHtml = data.slice(0, 5).map(book => `
+                    <div class="search-result-item" onclick="goToBook('${book.id}')">
+                        <img src="${book.thumbnail || '/static/images/no-cover.png'}" 
+                             alt="${book.title}"
+                             onerror="this.src='/static/images/no-cover.png'">
+                        <div>
+                            <div class="fw-bold">${book.title}</div>
+                            <small class="text-muted">
+                                ${book.authors ? book.authors.join(', ') : 'Unknown author'}
+                            </small>
+                        </div>
+                    </div>
+                `).join('');
+                
+                resultsDiv.innerHTML = resultsHtml;
+                resultsDiv.classList.add('show');
+            } else {
+                resultsDiv.innerHTML = `
+                    <div class="search-result-item">
+                        No results found
+                    </div>`;
+                resultsDiv.classList.add('show');
+            }
+        } catch (error) {
+            console.error('Search error:', error);
+            resultsDiv.innerHTML = `
+                <div class="search-result-item text-danger">
+                    Error searching books
+                    <button class="btn btn-sm btn-outline-danger" 
+                            onclick="retrySearch('${query}')">
+                        Retry
+                    </button>
+                </div>`;
+            resultsDiv.classList.add('show');
+        }
+    }
+
+    function goToBook(bookId) {
+        window.location.href = `/books/book/${bookId}`;
+    }
+
+    function handleSearch(event) {
+        event.preventDefault();
+        const query = document.getElementById('searchInput').value;
+        if (query.trim()) {
+            window.location.href = `/books/search?q=${encodeURIComponent(query)}`;
+        }
+    }
+
+    async function retrySearch(query) {
+        const input = document.getElementById('searchInput');
+        input.value = query;
+        await handleSearchInput({ target: input });
+    }
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(event) {
+        const searchResults = document.getElementById('searchResults');
+        const searchInput = document.getElementById('searchInput');
+        
+        if (!searchInput.contains(event.target) && !searchResults.contains(event.target)) {
+            searchResults.classList.remove('show');
+        }
+    });
+
+    // Keyboard navigation
+    document.getElementById('searchInput').addEventListener('keydown', function(e) {
+        const results = document.querySelectorAll('.search-result-item');
+        
+        switch(e.key) {
+            case 'ArrowDown':
+                e.preventDefault();
+                selectedIndex = Math.min(selectedIndex + 1, results.length - 1);
+                updateSelection(results);
+                break;
+                
+            case 'ArrowUp':
+                e.preventDefault();
+                selectedIndex = Math.max(selectedIndex - 1, -1);
+                updateSelection(results);
+                break;
+                
+            case 'Enter':
+                if (selectedIndex >= 0 && results[selectedIndex]) {
+                    results[selectedIndex].click();
+                }
+                break;
+                
+            case 'Escape':
+                document.getElementById('searchResults').classList.remove('show');
+                selectedIndex = -1;
+                break;
+        }
+    });
+
+    function updateSelection(results) {
+        results.forEach((result, index) => {
+            if (index === selectedIndex) {
+                result.classList.add('selected');
+                result.scrollIntoView({ block: 'nearest' });
+            } else {
+                result.classList.remove('selected');
+            }
+        });
+    }
     </script>
 </body>
 </html>

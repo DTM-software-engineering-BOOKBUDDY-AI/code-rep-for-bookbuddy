@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container my-4">
+    <div class="row">
+        <!-- Book Cover -->
+        <div class="col-md-4">
+            <img src="{{ book.thumbnail or url_for('static', filename='images/no-cover.png') }}" 
+                 class="img-fluid rounded shadow" 
+                 alt="{{ book.title }}">
+            
+            {% if book.preview_link %}
+            <a href="{{ book.preview_link }}" 
+               class="btn btn-primary w-100 mt-3" 
+               target="_blank">
+                Preview Book
+            </a>
+            {% endif %}
+        </div>
+        
+        <!-- Book Details -->
+        <div class="col-md-8">
+            <h1>{{ book.title }}</h1>
+            <h4 class="text-muted">
+                by {{ book.authors|join(', ') if book.authors else 'Unknown author' }}
+            </h4>
+            
+            <div class="mt-4">
+                {% if book.rating %}
+                <div class="mb-2">
+                    Rating: {{ "★" * book.rating }}{{ "☆" * (5 - book.rating) }}
+                    ({{ book.ratings_count }} ratings)
+                </div>
+                {% endif %}
+                
+                <div class="mb-2">
+                    <strong>Published:</strong> {{ book.published_date }}
+                </div>
+                
+                {% if book.publisher %}
+                <div class="mb-2">
+                    <strong>Publisher:</strong> {{ book.publisher }}
+                </div>
+                {% endif %}
+                
+                {% if book.categories %}
+                <div class="mb-2">
+                    <strong>Categories:</strong>
+                    {% for category in book.categories %}
+                    <span class="badge bg-secondary me-1">{{ category }}</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            
+            <div class="mt-4">
+                <h5>Description</h5>
+                <p>{{ book.description or 'No description available.' }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

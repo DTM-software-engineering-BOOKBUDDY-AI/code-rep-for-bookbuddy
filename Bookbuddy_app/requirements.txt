@@ -9,4 +9,4 @@ install Flask-Limiter==3.3.0
 bleach
 pytest
 pytest-cov
-
+google-api-python-client cachetools
