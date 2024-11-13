@@ -142,6 +142,11 @@ This structure helps us:
 2. Set up database: `flask db upgrade`
 3. Run the application: `flask run`
 
+<<<<<<< HEAD
+=======
+<<<<<<< Updated upstream
+=======
+>>>>>>> feature/reading-list
 # BookBuddy Route Map
 
 ## Main Routes
@@ -200,4 +205,10 @@ This structure helps us:
   - User information
   - Reading preferences
   - Privacy settings
+<<<<<<< HEAD
   - Reading activity
+=======
+  - Reading activity
+  
+>>>>>>> Stashed changes
+>>>>>>> feature/reading-list
