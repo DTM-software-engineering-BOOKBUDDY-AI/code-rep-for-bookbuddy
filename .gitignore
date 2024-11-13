@@ -1,6 +1,27 @@
-*.pyc
+# Virtual Environment
+myenv/
+venv/
+ENV/
+
+# Python
 __pycache__/
+*.py[cod]
+*$py.class
+
+# Flask
 instance/
-.env
+.webassets-cache
+
+# Database
 *.db
+*.sqlite3
+
+# Environment variables
+.env
+
+# IDE specific files
+.vscode/
+.idea/
+*.swp
+*.swo
 migrations/ 

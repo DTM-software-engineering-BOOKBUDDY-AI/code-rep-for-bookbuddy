@@ -1,42 +1,56 @@
+# Import necessary Flask extensions and modules
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
-from flask_login import LoginManager
-from config import Config
-from extensions import db, login_manager
+from flask_sqlalchemy import SQLAlchemy  # For database operations
+from flask_migrate import Migrate        # For handling database migrations
+from flask_login import LoginManager     # For user authentication
+from config import Config               # App configuration settings
+from extensions import db, login_manager # Shared database and login instances
 import os
-from dotenv import load_dotenv
+from dotenv import load_dotenv          # For loading environment variables
 
 def create_app():
-    # Load environment variables
+    """
+    Application Factory Function
+    
+    This function creates and configures the Flask application. Using a factory function
+    is a best practice as it allows for creating multiple instances of the app (useful
+    for testing) and keeps the global scope clean.
+    """
+    # Load environment variables from .env file
+    # This allows us to keep sensitive information like API keys separate from the code
     load_dotenv()
     
-    # Initialize Flask app
+    # Create the Flask application instance
+    # __name__ helps Flask determine the root path of the application
     app = Flask(__name__)
     
-    # Configure app
+    # Load configuration settings
+    # This sets up important app settings like secret keys and database URLs
     app.config.from_object(Config)
-    app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'your-secret-key')
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///bookbuddy.db')
-    app.config['GOOGLE_BOOKS_API_KEY'] = os.getenv('GOOGLE_BOOKS_API_KEY')
+    app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'your-secret-key')  # Used for session security
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///bookbuddy.db')  # Database connection string
+    app.config['GOOGLE_BOOKS_API_KEY'] = os.getenv('GOOGLE_BOOKS_API_KEY')  # API key for Google Books
     
-    # Initialize extensions
-    db.init_app(app)
-    migrate = Migrate(app, db)
-    login_manager.init_app(app)
+    # Initialize Flask extensions
+    db.init_app(app)              # Connect SQLAlchemy to Flask app
+    migrate = Migrate(app, db)     # Set up database migration capability
+    login_manager.init_app(app)    # Initialize login functionality
     
-    # Import models (moved inside function to avoid circular imports)
+    # Set up database models
+    # Using app context to avoid circular imports
     with app.app_context():
         from models import User, Book, ReadingList, UserPreferences
         
-        # Initialize database
+        # Create all database tables based on our models
         db.create_all()
     
-    # Register blueprints
+    # Register blueprints (routes)
+    # Blueprints help organize routes into manageable sections
     from routes.books import books_bp
     app.register_blueprint(books_bp, url_prefix='/books')
     
-    # Configure login manager
+    # Set up user loader for Flask-Login
+    # This tells Flask-Login how to find a specific user in the database
     @login_manager.user_loader
     def load_user(user_id):
         return User.query.get(int(user_id))

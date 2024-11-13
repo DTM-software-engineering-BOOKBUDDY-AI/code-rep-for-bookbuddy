@@ -1,54 +1,64 @@
+# Import necessary tools and libraries
 from flask import Flask, render_template, url_for, redirect, flash, request, jsonify
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
-from flask_login import LoginManager, current_user, login_user, logout_user, login_required
-from config import Config
-from extensions import db, login_manager
-from forms import LoginForm, SignupForm, ProfileForm
-import logging
-from routes.books import books_bp
-import os
-from dotenv import load_dotenv
+from flask_sqlalchemy import SQLAlchemy  # For database management
+from flask_migrate import Migrate        # For updating database structure
+from flask_login import LoginManager, current_user, login_user, logout_user, login_required  # For user authentication
+from config import Config               # App settings
+from extensions import db, login_manager # Database and login handling
+from forms import LoginForm, SignupForm, ProfileForm  # Forms for user input
+import logging  # For keeping track of what's happening in the app
+from routes.books import books_bp  # Book-related routes
+import os  # For interacting with the operating system
+from dotenv import load_dotenv  # For loading secret settings
 
+# Load secret settings from .env file
 load_dotenv()
 
-# Set up logging
+# Set up logging to help us track what's happening in our application
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
+# Create the Flask application - this is the core of our website
 app = Flask(__name__)
+
+# Configure the application with necessary settings
 app.config.from_object(Config)
-app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'your-secret-key')
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///bookbuddy.db')
-app.config['GOOGLE_BOOKS_API_KEY'] = os.getenv('GOOGLE_BOOKS_API_KEY')
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'your-secret-key')  # For security
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///bookbuddy.db')  # Database location
+app.config['GOOGLE_BOOKS_API_KEY'] = os.getenv('GOOGLE_BOOKS_API_KEY')  # Google Books API access
 
-# Initialize extensions with app
-db.init_app(app)
-migrate = Migrate(app, db)
-login_manager.init_app(app)
+# Set up our database and login system
+db.init_app(app)              # Connect to database
+migrate = Migrate(app, db)     # Setup database migrations
+login_manager.init_app(app)    # Initialize login functionality
 
-# Import models after db initialization
+# Import our database models (must be after db initialization)
 from models import User, Book, ReadingList, UserPreferences
 
-# Register the blueprint
+# Add the books blueprint - this organizes our book-related routes
 app.register_blueprint(books_bp, url_prefix='/books')
 
+# Tell Flask-Login how to find a specific user
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
 
+# Define what happens when someone visits the homepage
 @app.route('/')
 @app.route('/home')
 def homepage():
     return render_template("homepage.html")
 
-@app.route('/form' )
+# Routes for different pages (like chapters in a book)
+# Each route handles a different page or action on our website
+
+@app.route('/form')
 def form():
     return render_template("form page/form.html")
 
 @app.route('/recommendation')
 def recommendation():
-    # Create a sample book object (later this would come from your database)
+    # Create an example book (this will be replaced with real data later)
     book = {
         'id': 1,
         'title': "Don Quixote",
@@ -58,15 +68,12 @@ def recommendation():
         'genre': "Novel",
         'language': "Spanish",
         'year': "1605",
-        'summary': "Don Quixote is a Spanish novel that follows the adventures of a noble who, after reading too many chivalric romances, loses his sanity...",
-        'fullSummary': "The story tells the adventures of a nobleman who reads so many chivalric romances that he loses his mind and decides to become a knight-errant, recruiting a simple farmer, Sancho Panza, as his squire..."
+        'summary': "Don Quixote is a Spanish novel that follows the adventures of a noble...",
+        'fullSummary': "The story tells the adventures of a nobleman who reads so many chivalric romances..."
     }
     return render_template("recommendation.html", book=book)
 
-@app.route('/testbase')
-def testbase():
-    return render_template("testing_base.html")
-
+# Routes for user registration and login
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     if current_user.is_authenticated:
@@ -114,6 +121,7 @@ def signup():
     
     return render_template('signup.html', form=form)
 
+# Route for user login
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
@@ -132,6 +140,7 @@ def login():
     
     return render_template('login.html', form=form)
 
+# Route for user logout
 @app.route('/logout')
 @login_required
 def logout():
@@ -139,11 +148,12 @@ def logout():
     flash('You have been logged out.', 'info')
     return redirect(url_for('homepage'))
 
+# Route for user profile
 @app.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
     form = ProfileForm()
-    
+    # Handle form submission
     if form.validate_on_submit():
         try:
             current_user.username = form.username.data
@@ -251,6 +261,7 @@ def my_lib():
     }
     return render_template('my_lib.html', books=library_books)
 
+# Route for checking users
 @app.route('/check_users')
 def check_users():
     if app.debug:  # Only allow in debug mode
