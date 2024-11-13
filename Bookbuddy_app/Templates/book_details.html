@@ -3,61 +3,120 @@
 {% block content %}
 <div class="container my-4">
     <div class="row">
-        <!-- Book Cover -->
+        <!-- Book Cover Column -->
         <div class="col-md-4">
-            <img src="{{ book.thumbnail or url_for('static', filename='images/no-cover.png') }}" 
-                 class="img-fluid rounded shadow" 
-                 alt="{{ book.title }}">
-            
-            {% if book.preview_link %}
-            <a href="{{ book.preview_link }}" 
-               class="btn btn-primary w-100 mt-3" 
-               target="_blank">
-                Preview Book
-            </a>
-            {% endif %}
+            <div class="card shadow">
+                <img src="{{ book.thumbnail or url_for('static', filename='images/no-cover.png') }}" 
+                     class="card-img-top p-3" 
+                     alt="{{ book.title }}">
+                <div class="card-body">
+                    <!-- Reading List Buttons -->
+                    <div class="d-grid gap-2">
+                        {% if current_user.is_authenticated %}
+                            <button class="btn btn-success" onclick="addToReadingList('{{ book.id }}', 'current')">
+                                <i class="fas fa-book-reader"></i> Currently Reading
+                            </button>
+                            <button class="btn btn-primary" onclick="addToReadingList('{{ book.id }}', 'want')">
+                                <i class="fas fa-bookmark"></i> Want to Read
+                            </button>
+                            <button class="btn btn-secondary" onclick="addToReadingList('{{ book.id }}', 'finished')">
+                                <i class="fas fa-check-circle"></i> Finished Reading
+                            </button>
+                        {% else %}
+                            <a href="{{ url_for('login') }}" class="btn btn-primary">
+                                Login to Add to Reading List
+                            </a>
+                        {% endif %}
+
+                        {% if book.preview_link %}
+                            <a href="{{ book.preview_link }}" 
+                               class="btn btn-outline-primary" 
+                               target="_blank">
+                                <i class="fas fa-eye"></i> Preview Book
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
         </div>
         
-        <!-- Book Details -->
+        <!-- Book Details Column -->
         <div class="col-md-8">
-            <h1>{{ book.title }}</h1>
-            <h4 class="text-muted">
-                by {{ book.authors|join(', ') if book.authors else 'Unknown author' }}
-            </h4>
-            
-            <div class="mt-4">
-                {% if book.rating %}
-                <div class="mb-2">
-                    Rating: {{ "★" * book.rating }}{{ "☆" * (5 - book.rating) }}
-                    ({{ book.ratings_count }} ratings)
+            <div class="card shadow">
+                <div class="card-body">
+                    <h1 class="card-title">{{ book.title }}</h1>
+                    <h4 class="text-muted mb-4">
+                        by {{ book.authors|join(', ') if book.authors else 'Unknown author' }}
+                    </h4>
+                    
+                    <div class="row mb-4">
+                        {% if book.rating %}
+                        <div class="col-md-6 mb-2">
+                            <div class="d-flex align-items-center">
+                                <span class="text-warning me-2">
+                                    {% for i in range(book.rating) %}★{% endfor %}
+                                    {% for i in range(5 - book.rating) %}☆{% endfor %}
+                                </span>
+                                <span class="text-muted">({{ book.ratings_count }} ratings)</span>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        <div class="col-md-6 mb-2">
+                            <strong>Published:</strong> {{ book.published_date }}
+                        </div>
+                        
+                        {% if book.publisher %}
+                        <div class="col-md-6 mb-2">
+                            <strong>Publisher:</strong> {{ book.publisher }}
+                        </div>
+                        {% endif %}
+                        
+                        {% if book.categories %}
+                        <div class="col-12 mb-2">
+                            <strong>Categories:</strong><br>
+                            {% for category in book.categories %}
+                            <span class="badge bg-secondary me-1">{{ category }}</span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mt-4">
+                        <h5 class="card-subtitle mb-3">Description</h5>
+                        <p class="card-text">{{ book.description or 'No description available.' }}</p>
+                    </div>
                 </div>
-                {% endif %}
-                
-                <div class="mb-2">
-                    <strong>Published:</strong> {{ book.published_date }}
-                </div>
-                
-                {% if book.publisher %}
-                <div class="mb-2">
-                    <strong>Publisher:</strong> {{ book.publisher }}
-                </div>
-                {% endif %}
-                
-                {% if book.categories %}
-                <div class="mb-2">
-                    <strong>Categories:</strong>
-                    {% for category in book.categories %}
-                    <span class="badge bg-secondary me-1">{{ category }}</span>
-                    {% endfor %}
-                </div>
-                {% endif %}
-            </div>
-            
-            <div class="mt-4">
-                <h5>Description</h5>
-                <p>{{ book.description or 'No description available.' }}</p>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Add JavaScript for handling reading list actions -->
+<script>
+function addToReadingList(bookId, listType) {
+    fetch('/books/add-to-list', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            book_id: bookId,
+            list_type: listType
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Book added to your ' + listType + ' reading list!');
+        } else {
+            alert('Error: ' + data.message);
+        }
+    })
+    .catch(error => {
+        alert('Error adding book to list');
+        console.error('Error:', error);
+    });
+}
+</script>
 {% endblock %} 
