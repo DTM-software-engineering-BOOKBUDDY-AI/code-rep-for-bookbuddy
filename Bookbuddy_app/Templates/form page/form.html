@@ -15,7 +15,7 @@
 
     <section class="form-section">
         <div class="form-container">
-            <form id="book-form" action="{{ url_for('recommendation') }}">
+            <form id="book-form" action="{{ url_for('recommendation') }}" method="POST">
                 <!-- Question 1: Standalone or Series -->
                 <div class="question-content active" id="question-1">
                     <h3>Are you looking for a standalone book or a series?</h3>
@@ -58,7 +58,7 @@
 
                 <!-- Question 3: Genre -->
                 <div class="question-content" id="question-3">
-                    <h3>What genre do you feel like reading?</h3>
+                    <h3>What genres do you feel like reading?</h3>
                     <div class="options-container">
                         <label class="option-card">
                             <input type="checkbox" name="genres" value="Fantasy">
@@ -69,12 +69,44 @@
                             <span class="option-text">Science Fiction</span>
                         </label>
                         <label class="option-card">
-                            <input type="checkbox" name="genres" value="Historical">
-                            <span class="option-text">Historical</span>
+                            <input type="checkbox" name="genres" value="Mystery">
+                            <span class="option-text">Mystery/Thriller</span>
                         </label>
                         <label class="option-card">
-                            <input type="checkbox" name="genres" value="Thriller">
-                            <span class="option-text">Thriller</span>
+                            <input type="checkbox" name="genres" value="Romance">
+                            <span class="option-text">Romance</span>
+                        </label>
+                        <label class="option-card">
+                            <input type="checkbox" name="genres" value="Historical Fiction">
+                            <span class="option-text">Historical Fiction</span>
+                        </label>
+                        <label class="option-card">
+                            <input type="checkbox" name="genres" value="Literary Fiction">
+                            <span class="option-text">Literary Fiction</span>
+                        </label>
+                        <label class="option-card">
+                            <input type="checkbox" name="genres" value="Horror">
+                            <span class="option-text">Horror</span>
+                        </label>
+                        <label class="option-card">
+                            <input type="checkbox" name="genres" value="Contemporary">
+                            <span class="option-text">Contemporary</span>
+                        </label>
+                        <label class="option-card">
+                            <input type="checkbox" name="genres" value="Young Adult">
+                            <span class="option-text">Young Adult</span>
+                        </label>
+                        <label class="option-card">
+                            <input type="checkbox" name="genres" value="Non-fiction">
+                            <span class="option-text">Non-fiction</span>
+                        </label>
+                        <label class="option-card">
+                            <input type="checkbox" name="genres" value="Biography">
+                            <span class="option-text">Biography</span>
+                        </label>
+                        <label class="option-card">
+                            <input type="checkbox" name="genres" value="Self-Help">
+                            <span class="option-text">Self-Help</span>
                         </label>
                     </div>
                     <button type="button" class="btn btn-primary next-button" onclick="showNextQuestion()">Next</button>
@@ -106,39 +138,87 @@
 
                 <!-- Question 5: Book Length -->
                 <div class="question-content" id="question-5">
-                    <h3>What’s your ideal book length?</h3>
+                    <h3>What's your ideal book length?</h3>
                     <div class="options-container">
                         <label class="option-card">
-                            <input type="radio" name="length" value="Short">
-                            <span class="option-text">Short (less than 200 pages)</span>
+                            <input type="radio" name="length" value="short">
+                            <span class="option-text">Short (under 300 pages)</span>
                         </label>
                         <label class="option-card">
-                            <input type="radio" name="length" value="Medium">
-                            <span class="option-text">Medium (200-400 pages)</span>
+                            <input type="radio" name="length" value="medium">
+                            <span class="option-text">Medium (300-500 pages)</span>
                         </label>
                         <label class="option-card">
-                            <input type="radio" name="length" value="Long">
-                            <span class="option-text">Long (400+ pages)</span>
+                            <input type="radio" name="length" value="long">
+                            <span class="option-text">Long (over 500 pages)</span>
+                        </label>
+                        <label class="option-card">
+                            <input type="radio" name="length" value="no_preference">
+                            <span class="option-text">No Preference</span>
                         </label>
                     </div>
                     <button type="button" class="btn btn-primary next-button" onclick="showNextQuestion()">Next</button>
                 </div>
 
-                <!-- Question 6: Book Pace -->
+                <!-- Question 6: Pace -->
                 <div class="question-content" id="question-6">
-                    <h3>Do you want a book with a fast or slow pace?</h3>
+                    <h3>What pace of book do you prefer?</h3>
                     <div class="options-container">
                         <label class="option-card">
-                            <input type="radio" name="pace" value="Fast">
-                            <span class="option-text">Fast</span>
+                            <input type="radio" name="pace" value="slow">
+                            <span class="option-text">Slow & Steady</span>
                         </label>
                         <label class="option-card">
-                            <input type="radio" name="pace" value="Slow">
-                            <span class="option-text">Slow</span>
+                            <input type="radio" name="pace" value="moderate">
+                            <span class="option-text">Moderate</span>
                         </label>
                         <label class="option-card">
-                            <input type="radio" name="pace" value="Balanced">
-                            <span class="option-text">Balanced</span>
+                            <input type="radio" name="pace" value="fast">
+                            <span class="option-text">Fast-paced</span>
+                        </label>
+                        <label class="option-card">
+                            <input type="radio" name="pace" value="no_preference">
+                            <span class="option-text">No Preference</span>
+                        </label>
+                    </div>
+                    <button type="button" class="btn btn-primary next-button" onclick="showNextQuestion()">Next</button>
+                </div>
+
+                <!-- Question 7: Languages -->
+                <div class="question-content" id="question-7">
+                    <h3>Which languages do you read in?</h3>
+                    <div class="options-container">
+                        <label class="option-card">
+                            <input type="checkbox" name="preferred_languages" value="en">
+                            <span class="option-text">English</span>
+                        </label>
+                        <label class="option-card">
+                            <input type="checkbox" name="preferred_languages" value="es">
+                            <span class="option-text">Spanish</span>
+                        </label>
+                        <label class="option-card">
+                            <input type="checkbox" name="preferred_languages" value="fr">
+                            <span class="option-text">French</span>
+                        </label>
+                        <label class="option-card">
+                            <input type="checkbox" name="preferred_languages" value="de">
+                            <span class="option-text">German</span>
+                        </label>
+                    </div>
+                    <button type="button" class="btn btn-primary next-button" onclick="showNextQuestion()">Next</button>
+                </div>
+
+                <!-- Question 8: Content Maturity -->
+                <div class="question-content" id="question-8">
+                    <h3>What content maturity level do you prefer?</h3>
+                    <div class="options-container">
+                        <label class="option-card">
+                            <input type="radio" name="maturity_rating" value="NOT_MATURE">
+                            <span class="option-text">General Content</span>
+                        </label>
+                        <label class="option-card">
+                            <input type="radio" name="maturity_rating" value="MATURE">
+                            <span class="option-text">Mature Content</span>
                         </label>
                     </div>
                     <button type="button" class="btn btn-primary next-button" onclick="showNextQuestion()">Next</button>
@@ -146,10 +226,7 @@
 
                 <!-- Final: View Recommendations -->
                 <div class="question-content" id="recommendations">
-                    <h3>Based on your preferences, here are some recommendations:</h3>
-                    <div id="recommendations-list" class="recommendations-container">
-                        <!-- Recommendations will be populated here -->
-                    </div>
+                    <h3>Click below to get your personalized book recommendations!</h3>
                     <button type="submit" class="btn btn-primary submit-button">Get My Books</button>
                 </div>
             </form>

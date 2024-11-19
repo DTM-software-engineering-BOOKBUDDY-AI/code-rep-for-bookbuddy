@@ -54,24 +54,31 @@ def homepage():
 
 @app.route('/form')
 def form():
-    return render_template("form page/form.html")
+    return render_template('form page/form.html')
 
-@app.route('/recommendation')
+@app.route('/recommendation', methods=['GET', 'POST'])
 def recommendation():
-    # Create an example book (this will be replaced with real data later)
-    book = {
-        'id': 1,
-        'title': "Don Quixote",
-        'author': "Miguel de Cervantes",
-        'cover': "https://covers.openlibrary.org/b/id/8224816-L.jpg",
-        'rating': "4.5",
-        'genre': "Novel",
-        'language': "Spanish",
-        'year': "1605",
-        'summary': "Don Quixote is a Spanish novel that follows the adventures of a noble...",
-        'fullSummary': "The story tells the adventures of a nobleman who reads so many chivalric romances..."
-    }
-    return render_template("recommendation.html", book=book)
+    if request.method == 'POST':
+        # Here you would process the form data
+        form_data = request.form
+        # Process the data and generate recommendations
+        # For now, using example book
+        book = {
+            'id': 1,
+            'title': "Don Quixote",
+            'author': "Miguel de Cervantes",
+            'cover': "https://covers.openlibrary.org/b/id/8224816-L.jpg",
+            'rating': "4.5",
+            'genre': "Novel",
+            'language': "Spanish",
+            'year': "1605",
+            'summary': "Don Quixote is a Spanish novel that follows the adventures of a noble...",
+            'fullSummary': "The story tells the adventures of a nobleman who reads so many chivalric romances..."
+        }
+        return render_template("recommendation.html", book=book)
+    
+    # Handle GET request
+    return render_template("recommendation.html", book=None)
 
 # Routes for user registration and login
 @app.route('/signup', methods=['GET', 'POST'])
