@@ -53,28 +53,45 @@ def homepage():
 # Each route handles a different page or action on our website
 
 @app.route('/form')
+@login_required
 def form():
     return render_template('form page/form.html')
 
 @app.route('/recommendation', methods=['GET', 'POST'])
+@login_required  # Add this decorator to ensure user is logged in
 def recommendation():
-
     if request.method == 'POST':
         try:
-            reponse = UserPreferences(
-                user_id=current_user.id,
-                style=request.form['series'],
-                theme=request.form['themes'],
-                mood=request.form['mood'],
-                length=request.form['length'],
-                maturity=request.form['maturity_rating'],
-                genres=request.form['genres'],
-                language=request.form['preferred_languages'],
-                pace=request.form['pace']
-            )
-            db.session.add(reponse)
+            # Try to get existing preferences
+            preferences = UserPreferences.query.filter_by(user_id=current_user.id).first()
+            
+            # If preferences exist, update them. If not, create new ones
+            if preferences:
+                preferences.style = request.form['series']
+                preferences.theme = request.form['themes']
+                preferences.mood = request.form['mood']
+                preferences.length = request.form['length']
+                preferences.maturity = request.form['maturity_rating']
+                preferences.genres = request.form['genres']
+                preferences.language = request.form['preferred_languages']
+                preferences.pace = request.form['pace']
+            else:
+                preferences = UserPreferences(
+                    user_id=current_user.id,
+                    style=request.form['series'],
+                    theme=request.form['themes'],
+                    mood=request.form['mood'],
+                    length=request.form['length'],
+                    maturity=request.form['maturity_rating'],
+                    genres=request.form['genres'],
+                    language=request.form['preferred_languages'],
+                    pace=request.form['pace']
+                )
+                db.session.add(preferences)
+            
             db.session.commit()
             flash('Preferences saved successfully', 'success')
+            
         except Exception as e:
             db.session.rollback()
             flash(f'Error saving preferences: {str(e)}', 'error')
