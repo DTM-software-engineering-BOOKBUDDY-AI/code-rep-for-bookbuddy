@@ -60,8 +60,15 @@ class UserPreferences(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  # Links to a user
     
     # Reading preferences
-    favorite_genres = db.Column(db.String(500))  # List of favorite book types
-    preferred_language = db.Column(db.String(50))  # Preferred reading language
+    style = db.Column(db.String(50))  # Preferred book format (series , stand alone, etc.)
+    theme = db.Column(db.String(50))  # Preferred book theme (romance, mystery, etc.)
+    mood = db.Column(db.String(50))  # user's current mood (happy, sad, etc.)
+    length = db.Column(db.String(50))  # Preferred book length (short, long, etc.)
+    pace = db.Column(db.String(50))  # Preferred reading pace (fast, slow, etc.)
+    language = db.Column(db.String(50))  # Preferred book language
+    maturity = db.Column(db.String(50))  # Preferred content maturity level
+    genres = db.Column(db.String(500))  # List of favorite book types
+    language = db.Column(db.String(50))  # Preferred reading language
     reading_goal = db.Column(db.Integer)  # How many books they want to read per year
     
     # Settings for email notifications

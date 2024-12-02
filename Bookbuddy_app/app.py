@@ -41,7 +41,7 @@ app.register_blueprint(books_bp, url_prefix='/books')
 # Tell Flask-Login how to find a specific user
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(int(user_id))
+    return db.session.get(User ,int(user_id))
 
 # Define what happens when someone visits the homepage
 @app.route('/')
@@ -58,7 +58,27 @@ def form():
 
 @app.route('/recommendation', methods=['GET', 'POST'])
 def recommendation():
+
     if request.method == 'POST':
+        try:
+            reponse = UserPreferences(
+                user_id=current_user.id,
+                style=request.form['series'],
+                theme=request.form['themes'],
+                mood=request.form['mood'],
+                length=request.form['length'],
+                maturity=request.form['maturity_rating'],
+                genres=request.form['genres'],
+                language=request.form['preferred_languages'],
+                pace=request.form['pace']
+            )
+            db.session.add(reponse)
+            db.session.commit()
+            flash('Preferences saved successfully', 'success')
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Error saving preferences: {str(e)}', 'error')
+
         # Here you would process the form data
         form_data = request.form
         # Process the data and generate recommendations
