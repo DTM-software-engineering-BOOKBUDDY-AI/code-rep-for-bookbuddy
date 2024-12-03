@@ -7,6 +7,7 @@ from flask_login import UserMixin       # Adds login functionality to User class
 from datetime import datetime, date     # For handling dates and times
 from werkzeug.security import generate_password_hash, check_password_hash  # For password security
 
+
 # User class - This is like a template for storing user information
 # Similar to how a form has different fields, this class defines what information we store about users
 class User(db.Model, UserMixin):
