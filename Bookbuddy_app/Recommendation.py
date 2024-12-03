@@ -24,23 +24,24 @@ class BookRecommender:
         
         features = []
         
-        # Give genres higher weight (repeat 3 times)
+        # Add features without weights (each feature appears only once)
         if preference.genres:
-            features.append(self.get_weighted_text(preference.genres, 3, 'genres'))
+            features.append(f"genres:{preference.genres}")
         
-        # Theme and mood get medium weight (repeat 2 times)
         if preference.theme:
-            features.append(self.get_weighted_text(preference.theme, 2, 'theme'))
-        if preference.mood:
-            features.append(self.get_weighted_text(preference.mood, 2, 'mood'))
+            features.append(f"theme:{preference.theme}")
         
-        # Other features get normal weight
+        if preference.mood:
+            features.append(f"mood:{preference.mood}")
+        
         if preference.language:
-            features.append(f"language: {preference.language}")
+            features.append(f"language:{preference.language}")
+        
         if preference.length:
-            features.append(f"length: {preference.length}")
+            features.append(f"length:{preference.length}")
+        
         if preference.maturity:
-            features.append(f"maturity: {preference.maturity}")
+            features.append(f"maturity:{preference.maturity}")
         
         return ' '.join(features).lower()
 
@@ -50,11 +51,11 @@ class BookRecommender:
         
         # Match the weighting from user preferences
         if book_data.get('categories'):
-            features.append(self.get_weighted_text(' '.join(book_data['categories']), 3, 'genres'))
+            features.append(self.get_weighted_text(' '.join(book_data['categories']), 1, 'genres'))
         
         # Description (can match with user's theme/mood preferences)
         if book_data.get('description'):
-            features.append(self.get_weighted_text(book_data['description'], 2, 'theme'))
+            features.append(self.get_weighted_text(book_data['description'], 1, 'theme'))
         
         # Language (direct match with user's language preference)
         if book_data.get('language'):
@@ -149,6 +150,68 @@ class BookRecommender:
         print("-" * 50)
         print(book_text)
         print("\nSimilarity Score:", self.calculate_similarity(user_id, book_data))
+
+    def process_google_books_response(self, books):
+        """Process and clean the Google Books API response"""
+        processed_books = []
+        for book in books:
+            volume_info = book.get('volumeInfo', {})
+            
+            # Skip books without essential information
+            if not all([
+                volume_info.get('title'),
+                volume_info.get('authors'),
+                volume_info.get('description')
+            ]):
+                continue
+            
+            # Strict category filtering
+            categories = [cat.lower() for cat in volume_info.get('categories', [])]
+            if not any(cat in ' '.join(categories) for cat in [
+                'fiction',
+                'adventure',
+                'action and adventure',
+                'juvenile fiction'
+            ]):
+                continue
+            
+            # Skip non-fiction and educational materials
+            if any(cat in ' '.join(categories) for cat in [
+                'non-fiction',
+                'education',
+                'textbook',
+                'manual',
+                'guide'
+            ]):
+                continue
+            
+            # Check description for adventure content
+            description = volume_info.get('description', '').lower()
+            if not any(term in description for term in [
+                'adventure',
+                'quest',
+                'journey',
+                'expedition',
+                'explore',
+                'discovery'
+            ]):
+                continue
+            
+            processed_book = {
+                'id': book['id'],
+                'title': volume_info['title'],
+                'authors': volume_info['authors'],
+                'categories': categories,
+                'description': description,
+                'language': volume_info.get('language', 'unknown'),
+                'pageCount': volume_info.get('pageCount', 0),
+                'averageRating': volume_info.get('averageRating', 0),
+                'maturityRating': volume_info.get('maturityRating', 'NOT_MATURE')
+            }
+            
+            processed_books.append(processed_book)
+        
+        return processed_books
 
 # Example usage
 if __name__ == "__main__":
