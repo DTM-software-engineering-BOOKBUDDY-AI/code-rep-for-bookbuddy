@@ -24,7 +24,7 @@ class BookRecommender:
         
         features = []
         
-        # Add features without weights (each feature appears only once)
+        # Add existing features
         if preference.genres:
             features.append(f"genres:{preference.genres}")
         
@@ -42,6 +42,10 @@ class BookRecommender:
         
         if preference.maturity:
             features.append(f"maturity:{preference.maturity}")
+        
+        # Use style instead of series_preference
+        if preference.style:
+            features.append(f"style:{preference.style}")
         
         return ' '.join(features).lower()
 
@@ -70,6 +74,10 @@ class BookRecommender:
         # Maturity rating
         if book_data.get('maturityRating'):
             features.append(f"maturity: {book_data['maturityRating']}")
+        
+        # Add your new feature here, for example:
+        if book_data.get('authors'):
+            features.append(f"author: {' '.join(book_data['authors'])}")
         
         return ' '.join(features).lower()
 
@@ -181,7 +189,9 @@ class BookRecommender:
                 'education',
                 'textbook',
                 'manual',
-                'guide'
+                'guide',
+                'science',
+                'copyright'
             ]):
                 continue
             
@@ -206,7 +216,8 @@ class BookRecommender:
                 'language': volume_info.get('language', 'unknown'),
                 'pageCount': volume_info.get('pageCount', 0),
                 'averageRating': volume_info.get('averageRating', 0),
-                'maturityRating': volume_info.get('maturityRating', 'NOT_MATURE')
+                'maturityRating': volume_info.get('maturityRating', 'NOT_MATURE'),
+                'series': 'series' if 'series' in volume_info.get('title', '').lower() else 'standalone'
             }
             
             processed_books.append(processed_book)

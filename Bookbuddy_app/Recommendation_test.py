@@ -11,7 +11,7 @@ load_dotenv()
 
 # Create test Flask app
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///bookbuddy.db'  # Use your database URI
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///bookbuddy.db'
 db.init_app(app)
 
 def create_test_user():
@@ -38,7 +38,8 @@ def create_test_user():
                 length="no_preference",
                 maturity="not_mature",
                 language="english",
-                pace="medium"
+                pace="medium",
+                style="series"
             )
             db.session.add(preferences)
         else:
@@ -49,6 +50,7 @@ def create_test_user():
             preferences.maturity = "not_mature"
             preferences.language = "english"
             preferences.pace = "medium"
+            preferences.style = "series"
         
         db.session.commit()
         return test_user
@@ -69,13 +71,13 @@ def get_search_queries_from_preferences(user_prefs):
     # Base queries based on genres
     if 'genres' in features:
         genre = features['genres'][0]  # Get the first genre
-        queries.append(f"{genre} fiction")
-        queries.append(genre)
+        queries.append(f"{genre} adventure fiction")
+        queries.append(f"{genre} action adventure")
     
     # Add theme-based queries
     if 'theme' in features:
         theme = features['theme'][0]
-        queries.append(f"{theme} fiction")
+        queries.append(f"{theme} adventure")
     
     # Add mood-based queries
     if 'mood' in features:
@@ -95,11 +97,11 @@ def fetch_books_from_google_api(query, user_prefs=None, max_results=40):
     
     # Build query parameters with explicit English language
     params = {
-        'q': f'{query} language:english',  # Add language to query
+        'q': f'{query} language:english',
         'maxResults': max_results,
         'key': api_key,
         'printType': 'books',
-        'langRestrict': 'en',  # Explicitly set to English
+        'langRestrict': 'en',
         'orderBy': 'relevance'
     }
     
@@ -125,39 +127,59 @@ def process_google_books_response(books):
         ]):
             continue
         
-        # Clean and process the book data
+        # Strict category filtering
+        categories = [cat.lower() for cat in volume_info.get('categories', [])]
+        if not any(cat in ' '.join(categories) for cat in [
+            'fiction',
+            'adventure',
+            'action and adventure',
+            'juvenile fiction'
+        ]):
+            continue
+            
+        # Skip non-fiction and educational materials
+        if any(cat in ' '.join(categories) for cat in [
+            'non-fiction',
+            'education',
+            'textbook',
+            'manual',
+            'guide',
+            'science',
+            'copyright'
+        ]):
+            continue
+        
+        # Check description for adventure content
+        description = volume_info.get('description', '').lower()
+        if not any(term in description for term in [
+            'adventure',
+            'quest',
+            'journey',
+            'expedition',
+            'explore',
+            'discovery'
+        ]):
+            continue
+        
         processed_book = {
             'id': book['id'],
             'title': volume_info['title'],
             'authors': volume_info['authors'],
-            'categories': volume_info.get('categories', []),
-            'description': volume_info['description'],
+            'categories': categories,
+            'description': description,
             'language': volume_info.get('language', 'unknown'),
             'pageCount': volume_info.get('pageCount', 0),
             'averageRating': volume_info.get('averageRating', 0),
-            'maturityRating': volume_info.get('maturityRating', 'NOT_MATURE')
+            'maturityRating': volume_info.get('maturityRating', 'NOT_MATURE'),
+            'series': 'series' if 'series' in volume_info.get('title', '').lower() else 'standalone'
         }
         
-        # Additional content-based filtering
-        description = processed_book['description'].lower()
-        categories = [cat.lower() for cat in processed_book.get('categories', [])]
-        
-        # Less strict filtering criteria
-        has_relevant_content = (
-            any(term in description for term in ['adventure', 'action', 'journey', 'quest', 'explore']) or
-            any(term in ' '.join(categories) for term in ['adventure', 'action', 'fiction'])
-        )
-        
-        # Exclude non-fiction and educational materials
-        is_not_educational = not any(term in description.lower() 
-            for term in ['how to', 'textbook', 'study guide', 'manual'])
-        
-        if has_relevant_content and is_not_educational:
-            processed_books.append(processed_book)
+        processed_books.append(processed_book)
     
     return processed_books
 
 def test_recommendation_system():
+    """Test the recommendation system"""
     with app.app_context():
         # Create test user with preferences
         create_test_user()
@@ -196,7 +218,7 @@ def test_recommendation_system():
             num_recommendations=5
         )
         
-        # Print recommendations with debug info
+        # Print recommendations
         print("\nTop 5 Book Recommendations:")
         print("-" * 50)
         for i, rec in enumerate(recommendations, 1):
@@ -210,9 +232,13 @@ def test_recommendation_system():
             print(f"   Language: {book['language']}")
             print(f"   Rating: {book['averageRating']}/5" if book['averageRating'] else "   Rating: N/A")
             if book['description']:
-                print(f"   Description: {book['description'][:150]}...")
+                # Truncate description to 150 characters
+                desc = book['description'][:150] + "..." if len(book['description']) > 150 else book['description']
+                print(f"   Description: {desc}")
             
+            # Debug similarity calculation
             recommender.debug_similarity(test_user_id, book)
+            print("-" * 50)  # Add separator between recommendations
 
 if __name__ == "__main__":
     test_recommendation_system()
