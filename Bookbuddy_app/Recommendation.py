@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 from models import User, UserPreferences
 from extensions import db
-from app import app  # Import your Flask app
+ # Import your Flask app
 
 class BookRecommender:
     def __init__(self):

@@ -10,6 +10,8 @@ import logging  # For keeping track of what's happening in the app
 from routes.books import books_bp  # Book-related routes
 import os  # For interacting with the operating system
 from dotenv import load_dotenv  # For loading secret settings
+from Recommendation import BookRecommender
+from Recommendation_test import get_search_queries_from_preferences, fetch_books_from_google_api, process_google_books_response
 
 # Load secret settings from .env file
 load_dotenv()
@@ -58,64 +60,89 @@ def form():
     return render_template('form page/form.html')
 
 @app.route('/recommendation', methods=['GET', 'POST'])
-@login_required  # Add this decorator to ensure user is logged in
+@login_required
 def recommendation():
     if request.method == 'POST':
         try:
-            # Try to get existing preferences
+            # Save preferences to database
             preferences = UserPreferences.query.filter_by(user_id=current_user.id).first()
             
-            # If preferences exist, update them. If not, create new ones
+            # Convert lists to comma-separated strings
+            themes = ','.join(request.form.getlist('themes')) if request.form.getlist('themes') else ''
+            genres = ','.join(request.form.getlist('genres')) if request.form.getlist('genres') else ''
+            languages = ','.join(request.form.getlist('preferred_languages')) if request.form.getlist('preferred_languages') else ''
+            
             if preferences:
-                preferences.style = request.form['series']
-                preferences.theme = request.form['themes']
-                preferences.mood = request.form['mood']
-                preferences.length = request.form['length']
-                preferences.maturity = request.form['maturity_rating']
-                preferences.genres = request.form['genres']
-                preferences.language = request.form['preferred_languages']
-                preferences.pace = request.form['pace']
+                preferences.style = request.form.get('series', '')
+                preferences.theme = themes
+                preferences.mood = request.form.get('mood', '')
+                preferences.length = request.form.get('length', '')
+                preferences.maturity = request.form.get('maturity_rating', '')
+                preferences.genres = genres
+                preferences.language = languages
+                preferences.pace = request.form.get('pace', '')
             else:
                 preferences = UserPreferences(
                     user_id=current_user.id,
-                    style=request.form['series'],
-                    theme=request.form['themes'],
-                    mood=request.form['mood'],
-                    length=request.form['length'],
-                    maturity=request.form['maturity_rating'],
-                    genres=request.form['genres'],
-                    language=request.form['preferred_languages'],
-                    pace=request.form['pace']
+                    style=request.form.get('series', ''),
+                    theme=themes,
+                    mood=request.form.get('mood', ''),
+                    length=request.form.get('length', ''),
+                    maturity=request.form.get('maturity_rating', ''),
+                    genres=genres,
+                    language=languages,
+                    pace=request.form.get('pace', '')
                 )
                 db.session.add(preferences)
             
             db.session.commit()
-            flash('Preferences saved successfully', 'success')
-            
-        except Exception as e:
-            db.session.rollback()
-            flash(f'Error saving preferences: {str(e)}', 'error')
 
-        # Here you would process the form data
-        form_data = request.form
-        # Process the data and generate recommendations
-        # For now, using example book
-        book = {
-            'id': 1,
-            'title': "Don Quixote",
-            'author': "Miguel de Cervantes",
-            'cover': "https://covers.openlibrary.org/b/id/8224816-L.jpg",
-            'rating': "4.5",
-            'genre': "Novel",
-            'language': "Spanish",
-            'year': "1605",
-            'summary': "Don Quixote is a Spanish novel that follows the adventures of a noble...",
-            'fullSummary': "The story tells the adventures of a nobleman who reads so many chivalric romances..."
-        }
-        return render_template("recommendation.html", book=book)
-    
+            # Create recommender instance
+            recommender = BookRecommender()
+            
+            # Get user preferences
+            user_prefs = recommender.get_user_preference_text(current_user.id)
+            
+            # Log the full text of user preferences
+            logger.debug(f"User Preferences Text for User {current_user.id}: {user_prefs}")
+            
+            # Get search queries
+            search_queries = get_search_queries_from_preferences(user_prefs)
+            
+            # Log the search queries
+            logger.debug(f"Search Queries for User {current_user.id}: {search_queries}")
+            
+            # Fetch and process books
+            all_books = []
+            for query in search_queries:
+                books = fetch_books_from_google_api(query)
+                processed_books = process_google_books_response(books)
+                all_books.extend(processed_books)
+            
+            # Remove duplicates
+            unique_books = {book['id']: book for book in all_books}.values()
+            all_books = list(unique_books)
+            
+            # Get recommendations
+            recommendations = recommender.get_recommendations(
+                current_user.id,
+                all_books,
+                num_recommendations=5
+            )
+            
+            return render_template(
+                "recommendation.html", 
+                recommendations=recommendations,
+                show_results=True
+            )
+
+        except Exception as e:
+            logger.error(f"Error generating recommendations: {str(e)}")
+            flash(f'Error generating recommendations: {str(e)}', 'error')
+            return redirect(url_for('form'))
+
     # Handle GET request
-    return render_template("recommendation.html", book=None)
+    return render_template("recommendation.html", show_results=False)
 
 # Routes for user registration and login
 @app.route('/signup', methods=['GET', 'POST'])
@@ -349,6 +376,44 @@ def view_profile(username):
 @app.route('/book_search')
 def book_search():
     return render_template('search_results.html')
+
+@app.route('/add-to-reading-list', methods=['POST'])
+@login_required
+def add_to_reading_list():
+    try:
+        data = request.get_json()
+        book_id = data.get('book_id')
+        
+        # Check if book already exists in user's reading list
+        existing_book = ReadingList.query.filter_by(
+            user_id=current_user.id,
+            book_id=book_id
+        ).first()
+        
+        if existing_book:
+            return jsonify({
+                'success': False,
+                'message': 'Book is already in your reading list'
+            })
+        
+        # Add book to reading list
+        reading_list_item = ReadingList(
+            user_id=current_user.id,
+            book_id=book_id
+        )
+        db.session.add(reading_list_item)
+        db.session.commit()
+        
+        return jsonify({
+            'success': True,
+            'message': 'Book added to reading list successfully'
+        })
+        
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'message': str(e)
+        }), 500
 
 if __name__ == '__main__':
     with app.app_context():

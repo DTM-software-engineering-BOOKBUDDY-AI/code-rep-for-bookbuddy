@@ -251,42 +251,38 @@
 }
 
 .recommendation-section {
-    background-color: #f8f9fa;
-    min-height: calc(100vh - 100px);
     padding: 2rem 0;
+    background-color: #f8f9fa;
+    min-height: 100vh;
 }
 
-/* Book Carousel Container */
 .book-carousel-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 2rem;
-    max-width: 1000px;
+    position: relative;
+    max-width: 800px;
     margin: 0 auto;
     padding: 2rem;
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-/* Book Content */
-.book-content {
-    flex: 1;
-    max-width: 600px;
-    text-align: center;
+/* Book slide styles */
+.book-slide {
+    opacity: 1;
+    transition: opacity 0.3s ease-in-out;
 }
 
-/* Book Image Styles */
+/* Book image container */
 .book-image-container {
-    position: relative;
-    width: 300px;
-    margin: 0 auto;
-    perspective: 1000px;
+    text-align: center;
+    margin-bottom: 2rem;
 }
 
 .book-image {
-    width: 100%;
+    max-width: 250px;
     height: auto;
-    border-radius: 10px;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
     transition: transform 0.3s ease;
 }
 
@@ -294,97 +290,165 @@
     transform: scale(1.05);
 }
 
-/* Navigation Arrows */
+/* Navigation arrows */
 .carousel-arrow {
-    background: none;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    background-color: rgba(0, 0, 0, 0.5);
     border: none;
-    font-size: 2rem;
-    color: #0d6efd;
+    border-radius: 50%;
+    color: white;
+    font-size: 20px;
     cursor: pointer;
-    padding: 1rem;
-    transition: transform 0.3s ease;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
 }
 
 .carousel-arrow:hover {
-    transform: scale(1.2);
+    background-color: rgba(0, 0, 0, 0.8);
 }
 
-/* Quick Stats */
+.carousel-arrow.prev {
+    left: -20px;
+}
+
+.carousel-arrow.next {
+    right: -20px;
+}
+
+.carousel-arrow i {
+    color: white;
+}
+
+/* Book details styles */
+.book-title {
+    margin-bottom: 1.5rem;
+}
+
+.book-title h3 {
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.book-title p {
+    color: #666;
+}
+
+/* Quick stats section */
 .quick-stats {
     display: flex;
     justify-content: center;
     gap: 2rem;
-    margin: 1.5rem 0;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
 }
 
 .stat-item {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    font-size: 1.1rem;
+    color: #555;
 }
 
 .stat-item i {
-    font-size: 1.2rem;
+    color: #007bff;
 }
 
-/* Book Summary */
+/* Book summary section */
 .book-summary {
-    background-color: white !important;
+    background-color: #f8f9fa;
     padding: 1.5rem;
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(221, 208, 208, 0.796);
-    text-align: left;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
 }
 
-/* Action Buttons */
+.book-summary h4 {
+    color: #333;
+    margin-bottom: 1rem;
+}
+
+.summary-preview {
+    color: #666;
+    line-height: 1.6;
+}
+
+.full-summary {
+    margin-top: 1rem;
+    color: #666;
+    line-height: 1.6;
+    transition: all 0.3s ease;
+}
+
+.full-summary.hidden {
+    display: none;
+}
+
+/* Action buttons */
 .action-buttons {
     display: flex;
     justify-content: center;
     gap: 1rem;
+    margin-top: 2rem;
 }
 
-.action-buttons .btn {
-    padding: 0.75rem 1.5rem;
+.btn {
+    padding: 0.5rem 1.5rem;
+    border-radius: 25px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
 }
 
-/* Hidden Class */
-.hidden {
-    display: none;
+.btn i {
+    font-size: 1.1rem;
 }
 
-/* Responsive Design */
+/* Responsive design */
 @media (max-width: 768px) {
     .book-carousel-container {
-        flex-direction: column;
         padding: 1rem;
     }
 
-    .book-image-container {
-        width: 200px;
+    .carousel-arrow {
+        width: 35px;
+        height: 35px;
+    }
+
+    .carousel-arrow.prev {
+        left: -10px;
+    }
+
+    .carousel-arrow.next {
+        right: -10px;
+    }
+
+    .book-image {
+        max-width: 200px;
     }
 
     .quick-stats {
-        flex-wrap: wrap;
         gap: 1rem;
     }
 
     .action-buttons {
         flex-direction: column;
     }
-
-    .carousel-arrow {
-        transform: rotate(90deg);
-    }
 }
 
 @media (max-width: 480px) {
-    .book-image-container {
-        width: 150px;
+    .book-image {
+        max-width: 150px;
     }
 
-    .quick-stats {
-        font-size: 0.9rem;
+    .book-title h3 {
+        font-size: 1.5rem;
     }
 }
 
@@ -424,4 +488,10 @@
 #full-summary:not(.hidden) {
     opacity: 1;
     transform: translateY(0);
+}
+
+/* Make sure the book-carousel-container has proper positioning */
+.book-carousel-container {
+    position: relative;
+    padding: 0 30px; /* Add padding to make room for arrows */
 }

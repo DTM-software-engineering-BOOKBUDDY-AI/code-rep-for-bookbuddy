@@ -5,6 +5,7 @@ import requests
 import os
 from dotenv import load_dotenv
 from models import User, UserPreferences
+import logging
 
 # Load environment variables
 load_dotenv()
@@ -13,47 +14,6 @@ load_dotenv()
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///bookbuddy.db'
 db.init_app(app)
-
-def create_test_user():
-    """Create a test user with preferences"""
-    with app.app_context():
-        # Check if test user exists
-        test_user = User.query.filter_by(id=1).first()
-        if not test_user:
-            test_user = User(
-                username="test_user",
-                email="test@example.com"
-            )
-            db.session.add(test_user)
-            db.session.commit()
-
-        # Create or update user preferences
-        preferences = UserPreferences.query.filter_by(user_id=1).first()
-        if not preferences:
-            preferences = UserPreferences(
-                user_id=1,
-                genres="Adventure",
-                theme="adventure",
-                mood="adventurous",
-                length="no_preference",
-                maturity="not_mature",
-                language="english",
-                pace="medium",
-                style="series"
-            )
-            db.session.add(preferences)
-        else:
-            preferences.genres = "Adventure"
-            preferences.theme = "adventure"
-            preferences.mood = "adventurous"
-            preferences.length = "no_preference"
-            preferences.maturity = "not_mature"
-            preferences.language = "english"
-            preferences.pace = "medium"
-            preferences.style = "series"
-        
-        db.session.commit()
-        return test_user
 
 def get_search_queries_from_preferences(user_prefs):
     """Extract meaningful search terms from user preferences"""
@@ -65,30 +25,41 @@ def get_search_queries_from_preferences(user_prefs):
                 features[label] = []
             features[label].append(value)
     
-    # Build more specific search queries
+    # Define natural language templates
+    templates = [
+        "{genre} books with {theme} themes",
+        "{mood} {genre} novels",
+        "{genre} {style} for {maturity} readers",
+        "best {genre} books about {theme}",
+        "{theme} stories in {genre} style",
+        "{maturity} {genre} {theme} novels"
+    ]
+    
     queries = []
     
-    # Base queries based on genres
-    if 'genres' in features:
-        genre = features['genres'][0]  # Get the first genre
-        queries.append(f"{genre} adventure fiction")
-        queries.append(f"{genre} action adventure")
+    # Generate queries using templates
+    for template in templates:
+        try:
+            query = template.format(
+                genre=features.get('genres', [''])[0],
+                theme=features.get('theme', [''])[0],
+                mood=features.get('mood', [''])[0],
+                style=features.get('style', [''])[0],
+                maturity=features.get('maturity', [''])[0]
+            )
+            # Only add non-empty queries (no leading/trailing spaces)
+            if query.strip() and not query.startswith(' ') and not query.endswith(' '):
+                queries.append(query)
+        except (KeyError, IndexError):
+            continue
     
-    # Add theme-based queries
-    if 'theme' in features:
-        theme = features['theme'][0]
-        queries.append(f"{theme} adventure")
+    # Remove any duplicate queries while preserving order
+    final_queries = list(dict.fromkeys(queries))
     
-    # Add mood-based queries
-    if 'mood' in features:
-        mood = features['mood'][0]
-        if mood == 'adventurous':
-            queries.extend([
-                "adventure fiction",
-                "action adventure"
-            ])
+    # Log the generated queries
+    logging.debug(f"Generated queries: {final_queries}")
     
-    return queries
+    return final_queries
 
 def fetch_books_from_google_api(query, user_prefs=None, max_results=40):
     """Fetch books from Google Books API with improved filtering"""

@@ -1,109 +1,95 @@
 {% extends "base.html" %}
 
-{% block title %}Book Recommendation{% endblock %}
-
 {% block extra_css %}
-<link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
-<link rel="stylesheet" href="/static/css/recom.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/recom.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 {% endblock %}
 
 {% block content %}
 <main>
     <section class="recommendation-section">
         <div class="container py-5">
-            <!-- Title Section -->
-            <div class="text-center mb-5" data-aos="fade-down">
+            <div class="text-center mb-5">
                 <h2 class="display-4 fw-bold text-primary">Your Personalized Recommendations</h2>
                 <p class="lead text-muted">Discover books tailored just for you</p>
             </div>
 
-            <!-- Book Carousel Section -->
-            <div class="book-carousel-container" data-aos="fade-up">
-                <!-- Navigation Arrows -->
-                <button class="carousel-arrow prev" onclick="prevImage()">
-                    <i class="fas fa-chevron-left"></i>
-                </button>
-                
-                <!-- Book Display -->
-                <div class="book-content">
-                    <div class="book-title text-center mb-4">
-                        <h3 class="display-5" id="book-name">Don Quixote</h3>
-                        <p class="lead" id="book-author">by Miguel de Cervantes</p>
-                    </div>
+            {% if show_results %}
+                <div class="book-carousel-container">
+                    <button class="carousel-arrow prev" onclick="prevBook()">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
                     
-                    <div class="book-image-container">
-                        <img id="book-cover" src="https://covers.openlibrary.org/b/id/8224816-L.jpg" 
-                             alt="Don Quixote" class="book-image">
-                    </div>
-                    
-                    <div class="book-details mt-4">
-                        <!-- Quick Stats -->
-                        <div class="quick-stats">
-                            <div class="stat-item">
-                                <i class="fas fa-star text-warning"></i>
-                                <span>4.5</span>
-                            </div>
-                            <div class="stat-item">
-                                <i class="fas fa-book"></i>
-                                <span>Novel</span>
-                            </div>
-                            <div class="stat-item">
-                                <i class="fas fa-language"></i>
-                                <span>Spanish</span>
-                            </div>
-                            <div class="stat-item">
-                                <i class="fas fa-calendar"></i>
-                                <span>1605</span>
-                            </div>
-                        </div>
+                    <div class="book-content">
+                        {% for rec in recommendations %}
+                            <div class="book-slide" data-index="{{ loop.index0 }}" {% if not loop.first %}style="display: none;"{% endif %}>
+                                <div class="book-image-container mb-4">
+                                    <img src="https://books.google.com/books/content?id={{ rec.book.id }}&printsec=frontcover&img=1&zoom=1&source=gbs_api"
+                                         alt="{{ rec.book.title }}"
+                                         class="book-image">
+                                </div>
 
-                        <!-- Summary -->
-                        <div class="book-summary mt-4">
-                            <p id="summary-preview">
-                                Don Quixote is a Spanish novel that follows the adventures of a noble who, 
-                                after reading too many chivalric romances, loses his sanity...
-                                <button class="btn btn-link btn-sm" onclick="toggleSummary()">
-                                    <span id="read-more-text">Read More</span>
-                                    <i class="fas fa-chevron-down" id="summary-icon"></i>
-                                </button>
-                            </p>
-                            <div id="full-summary" class="hidden">
-                                <p>The story tells the adventures of a nobleman who reads so many chivalric romances 
-                                that he loses his mind and decides to become a knight-errant, recruiting a simple 
-                                farmer, Sancho Panza, as his squire...</p>
-                            </div>
-                        </div>
+                                <div class="book-title text-center mb-4">
+                                    <h3 class="display-5">{{ rec.book.title }}</h3>
+                                    <p class="lead">by {{ rec.book.authors|join(', ') }}</p>
+                                </div>
+                                
+                                <div class="quick-stats">
+                                    <div class="stat-item">
+                                        <i class="fas fa-star text-warning"></i>
+                                        <span>{{ "%.1f"|format(rec.similarity * 100) }}% Match</span>
+                                    </div>
+                                    {% if rec.book.categories %}
+                                    <div class="stat-item">
+                                        <i class="fas fa-book"></i>
+                                        <span>{{ rec.book.categories|join(', ') }}</span>
+                                    </div>
+                                    {% endif %}
+                                    <div class="stat-item">
+                                        <i class="fas fa-language"></i>
+                                        <span>{{ rec.book.language|upper }}</span>
+                                    </div>
+                                </div>
 
-                        <!-- Action Buttons -->
-                        <div class="action-buttons mt-4">
-                            <button class="btn btn-primary">
-                                <i class="fas fa-heart me-2"></i>Add to Favorites
-                            </button>
-                            <button onclick="goToDetails()" class="btn btn-outline-primary">
-                                <i class="fas fa-info-circle me-2"></i>More Details
-                            </button>
-                        </div>
+                                <div class="book-summary mt-4">
+                                    <h4>Summary</h4>
+                                    <p class="summary-preview">{{ rec.book.description[:200] }}...</p>
+                                    <div class="full-summary hidden">
+                                        <p>{{ rec.book.description }}</p>
+                                    </div>
+                                    <button class="btn btn-link" onclick="toggleSummary({{ loop.index0 }})">
+                                        <span class="read-more-text">Read More</span>
+                                        <i class="fas fa-chevron-down summary-icon"></i>
+                                    </button>
+                                </div>
+
+                                <div class="action-buttons mt-4">
+                                    <button class="btn btn-primary" onclick="addToReadingList('{{ rec.book.id }}')">
+                                        <i class="fas fa-bookmark"></i> Add to Reading List
+                                    </button>
+                                    <button class="btn btn-outline-primary" onclick="viewBookDetails('{{ rec.book.id }}')">
+                                        <i class="fas fa-info-circle"></i> More Details
+                                    </button>
+                                </div>
+                            </div>
+                        {% endfor %}
                     </div>
+
+                    <button class="carousel-arrow next" onclick="nextBook()">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
                 </div>
-
-                <!-- Navigation Arrows -->
-                <button class="carousel-arrow next" onclick="nextImage()">
-                    <i class="fas fa-chevron-right"></i>
-                </button>
-            </div>
+            {% else %}
+                <div class="text-center">
+                    <p>Please complete the <a href="{{ url_for('form') }}">recommendation form</a> to get personalized book suggestions.</p>
+                </div>
+            {% endif %}
         </div>
     </section>
 </main>
 {% endblock %}
 
 {% block extra_js %}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-<script>
-    AOS.init({
-        duration: 1000,
-        once: true
-    });
-</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="{{ url_for('static', filename='js/recommendation.js') }}"></script>
 {% endblock %}
