@@ -13,4 +13,7 @@ python-dotenv
 Flask-SQLAlchemy
 Flask-Migrate
 Flask-Login
+scikit-learn
+pandas
+numpy
 
