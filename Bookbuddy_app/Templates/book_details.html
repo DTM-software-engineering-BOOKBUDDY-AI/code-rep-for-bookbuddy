@@ -13,13 +13,19 @@
                     <!-- Reading List Buttons -->
                     <div class="d-grid gap-2">
                         {% if current_user.is_authenticated %}
-                            <button class="btn btn-success" onclick="addToReadingList('{{ book.id }}', 'current')">
+                            <button class="btn {% if reading_status == 'current' %}btn-primary{% else %}btn-outline-primary{% endif %} reading-list-btn" 
+                                    onclick="addToReadingList('{{ book.id }}', 'current')"
+                                    data-status="current">
                                 <i class="fas fa-book-reader"></i> Currently Reading
                             </button>
-                            <button class="btn btn-primary" onclick="addToReadingList('{{ book.id }}', 'want')">
+                            <button class="btn {% if reading_status == 'want' %}btn-primary{% else %}btn-outline-primary{% endif %} reading-list-btn"
+                                    onclick="addToReadingList('{{ book.id }}', 'want')"
+                                    data-status="want">
                                 <i class="fas fa-bookmark"></i> Want to Read
                             </button>
-                            <button class="btn btn-secondary" onclick="addToReadingList('{{ book.id }}', 'finished')">
+                            <button class="btn {% if reading_status == 'finished' %}btn-primary{% else %}btn-outline-primary{% endif %} reading-list-btn"
+                                    onclick="addToReadingList('{{ book.id }}', 'finished')"
+                                    data-status="finished">
                                 <i class="fas fa-check-circle"></i> Finished Reading
                             </button>
                         {% else %}
@@ -95,27 +101,41 @@
 <!-- Add JavaScript for handling reading list actions -->
 <script>
 function addToReadingList(bookId, listType) {
-    fetch('/books/add-to-list', {
+    fetch(`/add-to-reading-list`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
             book_id: bookId,
-            list_type: listType
+            status: listType
         })
     })
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            alert('Book added to your ' + listType + ' reading list!');
+            updateButtonStates(listType);
+            alert(data.message);
         } else {
             alert('Error: ' + data.message);
         }
     })
     .catch(error => {
-        alert('Error adding book to list');
+        alert('Error updating reading list');
         console.error('Error:', error);
+    });
+}
+
+function updateButtonStates(activeStatus) {
+    const buttons = document.querySelectorAll('.reading-list-btn');
+    buttons.forEach(button => {
+        if (button.dataset.status === activeStatus) {
+            button.classList.add('active');
+            button.classList.replace('btn-outline-primary', 'btn-primary');
+        } else {
+            button.classList.remove('active');
+            button.classList.replace('btn-primary', 'btn-outline-primary');
+        }
     });
 }
 </script>

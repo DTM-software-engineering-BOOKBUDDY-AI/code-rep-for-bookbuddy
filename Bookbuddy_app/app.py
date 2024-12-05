@@ -12,6 +12,8 @@ import os  # For interacting with the operating system
 from dotenv import load_dotenv  # For loading secret settings
 from Recommendation import BookRecommender
 from Recommendation_test import get_search_queries_from_preferences, fetch_books_from_google_api, process_google_books_response
+from datetime import datetime
+
 
 # Load secret settings from .env file
 load_dotenv()
@@ -39,6 +41,7 @@ from models import User, Book, ReadingList, UserPreferences
 
 # Add the books blueprint - this organizes our book-related routes
 app.register_blueprint(books_bp, url_prefix='/books')
+
 
 # Tell Flask-Login how to find a specific user
 @login_manager.user_loader
@@ -130,6 +133,14 @@ def recommendation():
                 num_recommendations=5
             )
             
+            # Get reading status for each recommended book
+            for rec in recommendations:
+                reading_list_entry = ReadingList.query.filter_by(
+                    user_id=current_user.id,
+                    book_id=rec['book']['id']
+                ).first()
+                rec['reading_status'] = reading_list_entry.status if reading_list_entry else None
+
             return render_template(
                 "recommendation.html", 
                 recommendations=recommendations,
@@ -383,30 +394,37 @@ def add_to_reading_list():
     try:
         data = request.get_json()
         book_id = data.get('book_id')
+        status = data.get('status')
         
-        # Check if book already exists in user's reading list
         existing_book = ReadingList.query.filter_by(
             user_id=current_user.id,
             book_id=book_id
         ).first()
         
         if existing_book:
-            return jsonify({
-                'success': False,
-                'message': 'Book is already in your reading list'
-            })
-        
-        # Add book to reading list
-        reading_list_item = ReadingList(
-            user_id=current_user.id,
-            book_id=book_id
-        )
-        db.session.add(reading_list_item)
+            # Update existing entry
+            existing_book.status = status
+            if status == 'current':
+                existing_book.started_at = datetime.utcnow()
+            elif status == 'finished':
+                existing_book.finished_at = datetime.utcnow()
+            message = 'Reading status updated successfully'
+        else:
+            # Add new entry
+            reading_list_item = ReadingList(
+                user_id=current_user.id,
+                book_id=book_id,
+                status=status,
+                started_at=datetime.utcnow() if status == 'current' else None
+            )
+            db.session.add(reading_list_item)
+            message = 'Book added to reading list successfully'
+            
         db.session.commit()
         
         return jsonify({
             'success': True,
-            'message': 'Book added to reading list successfully'
+            'message': message
         })
         
     except Exception as e:
@@ -414,6 +432,23 @@ def add_to_reading_list():
             'success': False,
             'message': str(e)
         }), 500
+
+@app.route('/book/<int:book_id>')
+def book_details(book_id):
+    book = Book.query.get_or_404(book_id)
+    reading_status = None
+    
+    if current_user.is_authenticated:
+        reading_list_entry = ReadingList.query.filter_by(
+            user_id=current_user.id,
+            book_id=book_id
+        ).first()
+        if reading_list_entry:
+            reading_status = reading_list_entry.status
+    
+    return render_template('book_details.html', 
+                         book=book, 
+                         reading_status=reading_status)
 
 if __name__ == '__main__':
     with app.app_context():

@@ -22,40 +22,43 @@
                     
                     <div class="book-content">
                         {% for rec in recommendations %}
-                            <div class="book-slide" data-index="{{ loop.index0 }}" {% if not loop.first %}style="display: none;"{% endif %}>
+                            <div class="book-slide" 
+                                 data-index="{{ loop.index0 }}" 
+                                 data-book-id="{{ rec['book']['id'] }}"
+                                 {% if not loop.first %}style="display: none;"{% endif %}>
                                 <div class="book-image-container mb-4">
-                                    <img src="https://books.google.com/books/content?id={{ rec.book.id }}&printsec=frontcover&img=1&zoom=1&source=gbs_api"
-                                         alt="{{ rec.book.title }}"
+                                    <img src="https://books.google.com/books/content?id={{ rec['book']['id'] }}&printsec=frontcover&img=1&zoom=1&source=gbs_api"
+                                         alt="{{ rec['book']['title'] }}"
                                          class="book-image">
                                 </div>
 
                                 <div class="book-title text-center mb-4">
-                                    <h3 class="display-5">{{ rec.book.title }}</h3>
-                                    <p class="lead">by {{ rec.book.authors|join(', ') }}</p>
+                                    <h3 class="display-5">{{ rec['book']['title'] }}</h3>
+                                    <p class="lead">by {{ rec['book']['authors']|join(', ') }}</p>
                                 </div>
                                 
                                 <div class="quick-stats">
                                     <div class="stat-item">
                                         <i class="fas fa-star text-warning"></i>
-                                        <span>{{ "%.1f"|format(rec.similarity * 100) }}% Match</span>
+                                        <span>{{ "%.1f"|format(rec['similarity'] * 100) }}% Match</span>
                                     </div>
-                                    {% if rec.book.categories %}
+                                    {% if rec['book']['categories'] %}
                                     <div class="stat-item">
                                         <i class="fas fa-book"></i>
-                                        <span>{{ rec.book.categories|join(', ') }}</span>
+                                        <span>{{ rec['book']['categories']|join(', ') }}</span>
                                     </div>
                                     {% endif %}
                                     <div class="stat-item">
                                         <i class="fas fa-language"></i>
-                                        <span>{{ rec.book.language|upper }}</span>
+                                        <span>{{ rec['book']['language']|upper }}</span>
                                     </div>
                                 </div>
 
                                 <div class="book-summary mt-4">
                                     <h4>Summary</h4>
-                                    <p class="summary-preview">{{ rec.book.description[:200] }}...</p>
+                                    <p class="summary-preview">{{ rec['book']['description'][:200] }}...</p>
                                     <div class="full-summary hidden">
-                                        <p>{{ rec.book.description }}</p>
+                                        <p>{{ rec['book']['description'] }}</p>
                                     </div>
                                     <button class="btn btn-link" onclick="toggleSummary({{ loop.index0 }})">
                                         <span class="read-more-text">Read More</span>
@@ -64,10 +67,28 @@
                                 </div>
 
                                 <div class="action-buttons mt-4">
-                                    <button class="btn btn-primary" onclick="addToReadingList('{{ rec.book.id }}')">
-                                        <i class="fas fa-bookmark"></i> Add to Reading List
-                                    </button>
-                                    <button class="btn btn-outline-primary" onclick="viewBookDetails('{{ rec.book.id }}')">
+                                    {% if current_user.is_authenticated %}
+                                        <button class="btn btn-outline-primary reading-list-btn" 
+                                                onclick="addToReadingList('{{ rec['book']['id'] }}', 'current')"
+                                                data-status="current">
+                                            <i class="fas fa-book-reader"></i> Currently Reading
+                                        </button>
+                                        <button class="btn btn-outline-primary reading-list-btn"
+                                                onclick="addToReadingList('{{ rec['book']['id'] }}', 'want')"
+                                                data-status="want">
+                                            <i class="fas fa-bookmark"></i> Want to Read
+                                        </button>
+                                        <button class="btn btn-outline-primary reading-list-btn"
+                                                onclick="addToReadingList('{{ rec['book']['id'] }}', 'finished')"
+                                                data-status="finished">
+                                            <i class="fas fa-check-circle"></i> Finished Reading
+                                        </button>
+                                    {% else %}
+                                        <a href="{{ url_for('login') }}" class="btn btn-primary">
+                                            <i class="fas fa-sign-in-alt"></i> Login to Add to Reading List
+                                        </a>
+                                    {% endif %}
+                                    <button class="btn btn-outline-primary" onclick="viewBookDetails('{{ rec['book']['id'] }}')">
                                         <i class="fas fa-info-circle"></i> More Details
                                     </button>
                                 </div>

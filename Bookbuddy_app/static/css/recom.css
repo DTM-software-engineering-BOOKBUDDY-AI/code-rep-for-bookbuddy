@@ -495,3 +495,31 @@
     position: relative;
     padding: 0 30px; /* Add padding to make room for arrows */
 }
+
+/* Add these styles to your existing CSS */
+.action-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.reading-list-btn {
+    min-width: 150px;
+    transition: all 0.3s ease;
+}
+
+.reading-list-btn i {
+    margin-right: 0.5rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .action-buttons {
+        flex-direction: column;
+    }
+    
+    .reading-list-btn {
+        width: 100%;
+    }
+}
