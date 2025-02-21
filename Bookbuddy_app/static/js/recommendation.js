@@ -60,26 +60,47 @@ function toggleSummary(index) {
     }
 }
 
-function addToReadingList(bookId) {
+function addToReadingList(bookId, listType) {
     fetch('/add-to-reading-list', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'X-CSRFToken': getCookie('csrf_token') // Add CSRF token if needed
+            'X-CSRFToken': getCookie('csrf_token')
         },
-        body: JSON.stringify({ book_id: bookId })
+        body: JSON.stringify({
+            book_id: bookId,
+            status: listType
+        })
     })
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            alert('Book added to reading list successfully!');
+            // Update the button states
+            updateButtonStates(bookId, listType);
+            alert(data.message);
         } else {
-            alert(data.message || 'Error adding book to reading list');
+            alert('Error: ' + data.message);
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('Error adding book to reading list');
+        alert('Error updating reading list');
+    });
+}
+
+function updateButtonStates(bookId, activeStatus) {
+    const bookSlide = document.querySelector(`.book-slide[data-book-id="${bookId}"]`);
+    if (!bookSlide) return;
+
+    const buttons = bookSlide.querySelectorAll('.reading-list-btn');
+    buttons.forEach(button => {
+        if (button.dataset.status === activeStatus) {
+            button.classList.remove('btn-outline-primary');
+            button.classList.add('btn-primary');
+        } else {
+            button.classList.remove('btn-primary');
+            button.classList.add('btn-outline-primary');
+        }
     });
 }
 
