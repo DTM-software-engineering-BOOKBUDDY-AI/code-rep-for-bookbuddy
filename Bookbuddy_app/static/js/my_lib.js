@@ -22,8 +22,32 @@ function updateProgress(bookId) {
 
 // Start Reading Handler
 function startReading(bookId) {
-    // Add logic to move book to currently reading
-    alert('Book moved to currently reading list');
+    // Update book status to "current"
+    fetch('/add-to-reading-list', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            book_id: bookId,
+            status: 'current'
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Show success message
+            alert(data.message);
+            // Reload page to show updated lists
+            window.location.reload();
+        } else {
+            alert('Error: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred. Please try again.');
+    });
 }
 
 // Review Handler

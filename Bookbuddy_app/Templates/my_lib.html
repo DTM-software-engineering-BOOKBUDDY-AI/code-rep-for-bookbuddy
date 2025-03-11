@@ -6,6 +6,10 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/my_lib.css') }}">
 {% endblock %}
 
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/my_lib.js') }}"></script>
+{% endblock %}
+
 {% block content %}
 <div class="container py-5 pb-5">
     <!-- Header Section -->
@@ -17,7 +21,7 @@
                     <div class="card bg-primary text-white mb-3">
                         <div class="card-body text-center">
                             <i class="fas fa-book-reader fa-2x mb-2"></i>
-                            <h5 class="card-title">12 Books</h5>
+                            <h5 class="card-title">{{ stats.total_books }} Books</h5>
                             <p class="card-text">Total Read</p>
                         </div>
                     </div>
@@ -26,7 +30,7 @@
                     <div class="card bg-success text-white mb-3">
                         <div class="card-body text-center">
                             <i class="fas fa-star fa-2x mb-2"></i>
-                            <h5 class="card-title">4.5</h5>
+                            <h5 class="card-title">{{ stats.avg_rating }}</h5>
                             <p class="card-text">Avg Rating</p>
                         </div>
                     </div>
@@ -35,7 +39,7 @@
                     <div class="card bg-info text-white mb-3">
                         <div class="card-body text-center">
                             <i class="fas fa-clock fa-2x mb-2"></i>
-                            <h5 class="card-title">120h</h5>
+                            <h5 class="card-title">{{ stats.reading_time }}h</h5>
                             <p class="card-text">Reading Time</p>
                         </div>
                     </div>
@@ -52,39 +56,50 @@
                 <button class="btn btn-outline-primary">View All</button>
             </div>
             <div class="row">
-                {% for book in books.current_books %}
-                <div class="col-md-4 mb-4">
-                    <div class="card h-100">
-                        <img src="{{ url_for('static', filename='images/products/' + book.image) }}" 
-                             class="card-img-top" alt="{{ book.title }}"
-                             style="height: 300px; object-fit: cover;">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ book.title }}</h5>
-                            <p class="card-text text-muted">{{ book.author }}</p>
-                            <div class="progress mb-3" style="height: 5px;">
-                                <div class="progress-bar" role="progressbar" 
-                                     style="width: {{ book.progress }}%" 
-                                     aria-valuenow="{{ book.progress }}" 
-                                     aria-valuemin="0" 
-                                     aria-valuemax="100">
+                {% if books.current_books %}
+                    {% for book in books.current_books %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100">
+                            <img src="{{ url_for('static', filename='images/products/' + book.image) }}" 
+                                 class="card-img-top" alt="{{ book.title }}"
+                                 style="height: 300px; object-fit: cover;">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ book.title }}</h5>
+                                <p class="card-text text-muted">{{ book.author }}</p>
+                                <div class="progress mb-3" style="height: 5px;">
+                                    <div 
+                                        class="progress-bar" 
+                                        role="progressbar" 
+                                        style="width: {{ book.progress }}%;" 
+                                        aria-valuenow="{{ book.progress }}" 
+                                        aria-valuemin="0" 
+                                        aria-valuemax="100"
+                                    ></div>
                                 </div>
-                            </div>
-                            <p class="text-muted small mb-3">{{ book.progress }}% completed</p>
-                            <div class="d-flex justify-content-between gap-2">
-                                <button class="btn btn-sm btn-outline-primary flex-grow-1" onclick="showBookDetails({{ book.id }})">
-                                    <i class="fas fa-info-circle"></i> Details
-                                </button>
-                                <button class="btn btn-sm btn-outline-success flex-grow-1" onclick="addNote({{ book.id }})">
-                                    <i class="fas fa-edit"></i> Add Note
-                                </button>
-                                <button class="btn btn-sm btn-outline-info flex-grow-1" onclick="updateProgress({{ book.id }})">
-                                    <i class="fas fa-tasks"></i> Progress
-                                </button>
+                                <p class="text-muted small mb-3">{{ book.progress }}% completed</p>
+                                <div class="d-flex justify-content-between gap-2">
+                                    <button class="btn btn-sm btn-outline-primary flex-grow-1" 
+                                            onclick="showBookDetails('{{ book.id }}')">
+                                        <i class="fas fa-info-circle"></i> Details
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-success flex-grow-1" 
+                                            onclick="addNote('{{ book.id }}')">
+                                        <i class="fas fa-edit"></i> Add Note
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-info flex-grow-1" 
+                                            onclick="updateProgress('{{ book.id }}')">
+                                        <i class="fas fa-tasks"></i> Progress
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                {% endfor %}
+                    {% endfor %}
+                {% else %}
+                    <div class="col-12 text-center">
+                        <p class="text-muted">You're not currently reading any books. Start reading something new!</p>
+                    </div>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -97,22 +112,29 @@
                 <button class="btn btn-outline-success">View All</button>
             </div>
             <div class="row">
-                {% for book in books.want_to_read %}
-                <div class="col-md-4 mb-4">
-                    <div class="card h-100">
-                        <img src="{{ url_for('static', filename='images/products/' + book.image) }}" 
-                             class="card-img-top" alt="{{ book.title }}"
-                             style="height: 300px; object-fit: cover;">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ book.title }}</h5>
-                            <p class="card-text text-muted">{{ book.author }}</p>
-                            <button class="btn btn-primary w-100" onclick="startReading({{ book.id }})">
-                                Start Reading
-                            </button>
+                {% if books.want_to_read %}
+                    {% for book in books.want_to_read %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100">
+                            <img src="{{ url_for('static', filename='images/products/' + book.image) }}" 
+                                 class="card-img-top" alt="{{ book.title }}"
+                                 style="height: 300px; object-fit: cover;">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ book.title }}</h5>
+                                <p class="card-text text-muted">{{ book.author }}</p>
+                                <button class="btn btn-primary w-100" 
+                                        onclick="startReading('{{ book.id }}')">
+                                    Start Reading
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
-                {% endfor %}
+                    {% endfor %}
+                {% else %}
+                    <div class="col-12 text-center">
+                        <p class="text-muted">Your reading wishlist is empty. Discover new books to add!</p>
+                    </div>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -125,27 +147,34 @@
                 <button class="btn btn-outline-info">View All</button>
             </div>
             <div class="row">
-                {% for book in books.finished_books %}
-                <div class="col-md-4 mb-4">
-                    <div class="card h-100">
-                        <img src="{{ url_for('static', filename='images/products/' + book.image) }}" 
-                             class="card-img-top" alt="{{ book.title }}"
-                             style="height: 300px; object-fit: cover;">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ book.title }}</h5>
-                            <p class="card-text text-muted">{{ book.author }}</p>
-                            <div class="text-warning mb-3">
-                                {% for i in range(5) %}
-                                <i class="fas fa-star"></i>
-                                {% endfor %}
+                {% if books.finished_books %}
+                    {% for book in books.finished_books %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100">
+                            <img src="{{ url_for('static', filename='images/products/' + book.image) }}" 
+                                 class="card-img-top" alt="{{ book.title }}"
+                                 style="height: 300px; object-fit: cover;">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ book.title }}</h5>
+                                <p class="card-text text-muted">{{ book.author }}</p>
+                                <div class="text-warning mb-3">
+                                    {% for i in range(5) %}
+                                    <i class="fas fa-star"></i>
+                                    {% endfor %}
+                                </div>
+                                <button class="btn btn-outline-info w-100" 
+                                        onclick="showReview('{{ book.id }}')">
+                                    View Review
+                                </button>
                             </div>
-                            <button class="btn btn-outline-info w-100" onclick="showReview({{ book.id }})">
-                                View Review
-                            </button>
                         </div>
                     </div>
-                </div>
-                {% endfor %}
+                    {% endfor %}
+                {% else %}
+                    <div class="col-12 text-center">
+                        <p class="text-muted">You haven't completed any books yet. Keep reading!</p>
+                    </div>
+                {% endif %}
             </div>
         </div>
     </div>

@@ -13,6 +13,8 @@ from dotenv import load_dotenv  # For loading secret settings
 from Recommendation import BookRecommender
 from Recommendation_test import get_search_queries_from_preferences, fetch_books_from_google_api, process_google_books_response
 from datetime import datetime
+from werkzeug.security import generate_password_hash, check_password_hash
+from models import User, UserPreferences, ReadingList, Book
 
 
 # Load secret settings from .env file
@@ -275,73 +277,76 @@ def profile():
 @app.route('/my_lib')
 @login_required
 def my_lib():
-    # Sample book collections
+    # Fetch user's books from the database
+    current_books = db.session.query(Book, ReadingList).join(
+        ReadingList, Book.id == ReadingList.book_id
+    ).filter(
+        ReadingList.user_id == current_user.id,
+        ReadingList.status == 'current'
+    ).all()
+    
+    want_to_read_books = db.session.query(Book, ReadingList).join(
+        ReadingList, Book.id == ReadingList.book_id
+    ).filter(
+        ReadingList.user_id == current_user.id,
+        ReadingList.status == 'want'
+    ).all()
+    
+    finished_books = db.session.query(Book, ReadingList).join(
+        ReadingList, Book.id == ReadingList.book_id
+    ).filter(
+        ReadingList.user_id == current_user.id,
+        ReadingList.status == 'finished'
+    ).all()
+    
+    # Format the data for the template
     library_books = {
         'current_books': [
             {
-                'id': 1,
-                'title': "The Alchemist",
-                'author': "Paulo Coelho",
-                'progress': 45,
-                'image': "01.jpg"
-            },
-            {
-                'id': 2,
-                'title': "Dune",
-                'author': "Frank Herbert",
-                'progress': 30,
-                'image': "02.jpg"
-            },
-            {
-                'id': 3,
-                'title': "1984",
-                'author': "George Orwell",
-                'progress': 75,
-                'image': "03.jpg"
-            }
+                'id': book.id,
+                'title': book.title,
+                'author': book.author,
+                'progress': reading_list.progress or 0,
+                'image': book.cover_image or 'default-book-cover.jpg'
+            } for book, reading_list in current_books
         ],
         'want_to_read': [
             {
-                'id': 4,
-                'title': "The Midnight Library",
-                'author': "Matt Haig",
-                'image': "04.jpg"
-            },
-            {
-                'id': 5,
-                'title': "Project Hail Mary",
-                'author': "Andy Weir",
-                'image': "05.jpg"
-            },
-            {
-                'id': 6,
-                'title': "The Seven Husbands of Evelyn Hugo",
-                'author': "Taylor Jenkins Reid",
-                'image': "06.jpg"
-            }
+                'id': book.id,
+                'title': book.title,
+                'author': book.author,
+                'image': book.cover_image or 'default-book-cover.jpg'
+            } for book, reading_list in want_to_read_books
         ],
         'finished_books': [
             {
-                'id': 7,
-                'title': "The Thursday Murder Club",
-                'author': "Richard Osman",
-                'image': "07.jpg"
-            },
-            {
-                'id': 8,
-                'title': "Klara and the Sun",
-                'author': "Kazuo Ishiguro",
-                'image': "08.jpg"
-            },
-            {
-                'id': 9,
-                'title': "The Invisible Life of Addie LaRue",
-                'author': "V.E. Schwab",
-                'image': "09.jpg"
-            }
+                'id': book.id,
+                'title': book.title,
+                'author': book.author,
+                'image': book.cover_image or 'default-book-cover.jpg'
+            } for book, reading_list in finished_books
         ]
     }
-    return render_template('my_lib.html', books=library_books)
+    
+    # Get reading statistics
+    total_books = len(current_books) + len(finished_books)
+    
+    # Calculate average rating if you have a rating system
+    # This is a placeholder - modify according to your actual data model
+    avg_rating = 0
+    if finished_books:
+        avg_rating = 4.5  # Replace with actual calculation if you have ratings
+    
+    # Calculate total reading time (placeholder)
+    reading_time = total_books * 10  # Placeholder: 10 hours per book
+    
+    library_stats = {
+        'total_books': total_books,
+        'avg_rating': avg_rating,
+        'reading_time': reading_time
+    }
+    
+    return render_template('my_lib.html', books=library_books, stats=library_stats)
 
 # Route for checking users
 @app.route('/check_users')
