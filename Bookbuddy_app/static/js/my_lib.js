@@ -115,7 +115,7 @@ function startReading(bookId) {
         status: 'current',
         title: bookTitle || 'Unknown Title',
         author: bookAuthor || 'Unknown Author',
-        cover_image: bookCover || 'default-book-cover.jpg'
+        cover_image: bookCover || '01.jpg'
     };
     
     console.log("Sending request with data:", requestData);

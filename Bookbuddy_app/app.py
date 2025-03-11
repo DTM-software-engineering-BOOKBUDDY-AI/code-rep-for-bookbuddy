@@ -301,15 +301,28 @@ def my_lib():
     
     # Helper function to check if an image exists
     def get_image_path(image_name):
-        if not image_name or image_name == 'default-book-cover.jpg':
-            return 'default-book-cover.jpg'
+        # Default image to use if the requested one doesn't exist
+        default_image = '01.jpg'  # Using an existing image from the products directory
+        
+        if not image_name:
+            app.logger.debug(f"No image name provided, using default: {default_image}")
+            return default_image
+        
+        # If the image name contains a full URL or path, extract just the filename
+        if '/' in image_name:
+            image_name = image_name.split('/')[-1]
+            app.logger.debug(f"Extracted filename from path: {image_name}")
         
         # Check if the image exists in the static folder
         image_path = os.path.join(app.static_folder, 'images', 'products', image_name)
+        app.logger.debug(f"Checking image path: {image_path}")
+        
         if os.path.exists(image_path):
+            app.logger.debug(f"Image exists: {image_name}")
             return image_name
         else:
-            return 'default-book-cover.jpg'
+            app.logger.debug(f"Image does not exist: {image_name}, using default: {default_image}")
+            return default_image
     
     # Format the data for the template
     library_books = {
@@ -341,7 +354,7 @@ def my_lib():
     }
     
     # Get reading statistics
-    total_books = len(current_books) + len(finished_books)
+    total_books = len(current_books) + len(want_to_read_books) + len(finished_books)
     
     # Calculate average rating if you have a rating system
     # This is a placeholder - modify according to your actual data model
@@ -419,7 +432,48 @@ def add_to_reading_list():
         # Get book details from the request data
         book_title = data.get('title', 'Unknown Title')
         book_author = data.get('author', 'Unknown Author')
-        book_cover = data.get('cover_image', 'default-book-cover.jpg')
+        book_cover = data.get('cover_image', '')
+        
+        # Handle external image URLs (like from Google Books API)
+        if book_cover and (book_cover.startswith('http://') or book_cover.startswith('https://')):
+            try:
+                # Generate a unique filename
+                import uuid
+                import requests
+                import os
+                
+                # Download the image directly without using PIL
+                response = requests.get(book_cover)
+                if response.status_code == 200:
+                    # Generate a unique filename
+                    image_filename = f"{uuid.uuid4().hex}.jpg"
+                    image_path = os.path.join(app.static_folder, 'images', 'products', image_filename)
+                    
+                    # Save the image directly
+                    with open(image_path, 'wb') as f:
+                        f.write(response.content)
+                    
+                    # Update book_cover to use the saved image
+                    book_cover = image_filename
+                    app.logger.debug(f"Downloaded and saved cover image: {image_filename}")
+                else:
+                    app.logger.debug(f"Failed to download cover image from URL: {book_cover}")
+                    book_cover = '01.jpg'  # Use default image
+            except Exception as e:
+                app.logger.error(f"Error downloading cover image: {str(e)}")
+                book_cover = '01.jpg'  # Use default image
+        # Clean up the cover image path if it's a relative URL
+        elif book_cover and '/' in book_cover:
+            book_cover = book_cover.split('/')[-1]
+        
+        # Verify the cover image exists, if not use a default
+        if book_cover and not (book_cover.startswith('http://') or book_cover.startswith('https://')):
+            cover_path = os.path.join(app.static_folder, 'images', 'products', book_cover)
+            if not os.path.exists(cover_path):
+                app.logger.debug(f"Cover image does not exist: {book_cover}, using default")
+                book_cover = '01.jpg'  # Use an existing image as default
+        elif not book_cover:
+            book_cover = '01.jpg'  # Use an existing image as default
         
         # Print the data for debugging
         print(f"Book data: ID={external_book_id}, Title={book_title}, Author={book_author}, Cover={book_cover}")
@@ -438,7 +492,7 @@ def add_to_reading_list():
                 book.title = book_title
             if book_author != 'Unknown Author':
                 book.author = book_author
-            if book_cover != 'default-book-cover.jpg':
+            if book_cover != '01.jpg':
                 book.cover_image = book_cover
                 
             app.logger.debug(f"Updated book details: Title={book.title}, Author={book.author}, Cover={book.cover_image}")
@@ -583,7 +637,7 @@ def test_add_book():
         test_book = Book(
             title="Test Book",
             author="Test Author",
-            cover_image="default-book-cover.jpg"
+            cover_image="01.jpg"
         )
         db.session.add(test_book)
         db.session.flush()  # Get the ID

@@ -74,14 +74,7 @@
                                 <h5 class="card-title">{{ book.title }}</h5>
                                 <p class="card-text text-muted">{{ book.author }}</p>
                                 <div class="progress mb-3" style="height: 5px;">
-                                    <div 
-                                        class="progress-bar" 
-                                        role="progressbar" 
-                                        style="width: {{ book.progress }}%;" 
-                                        aria-valuenow="{{ book.progress }}" 
-                                        aria-valuemin="0" 
-                                        aria-valuemax="100"
-                                    ></div>
+                                    <div class="progress-bar" role="progressbar" style="width: {{ book.progress }}%;" aria-valuenow="{{ book.progress }}" aria-valuemin="0" aria-valuemax="100"></div>
                                 </div>
                                 <p class="text-muted small mb-3">{{ book.progress }}% completed</p>
                                 <div class="d-flex justify-content-between gap-2">

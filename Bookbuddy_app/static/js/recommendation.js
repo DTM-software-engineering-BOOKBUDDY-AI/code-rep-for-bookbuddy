@@ -61,19 +61,25 @@ function toggleSummary(index) {
 }
 
 function addToReadingList(bookId, listType) {
-    // Find the book card
-    const bookCard = document.querySelector(`.book-card[data-book-id="${bookId}"]`);
-    if (!bookCard) {
-        console.error("Book card not found for ID:", bookId);
+    // Find the book slide
+    const bookSlide = document.querySelector(`.book-slide[data-book-id="${bookId}"]`);
+    if (!bookSlide) {
+        console.error("Book slide not found for ID:", bookId);
         alert("Error: Could not find book details");
         return;
     }
     
     // Get book details
-    const bookTitle = bookCard.querySelector('.book-title').textContent.trim();
-    const bookAuthor = bookCard.querySelector('.book-author').textContent.trim();
-    const coverImg = bookCard.querySelector('.book-cover');
-    const bookCover = coverImg ? coverImg.src.split('/').pop() : 'default-book-cover.jpg';
+    const bookTitle = bookSlide.querySelector('.book-title h3').textContent.trim();
+    const bookAuthor = bookSlide.querySelector('.book-title p').textContent.replace('by ', '').trim();
+    const coverImg = bookSlide.querySelector('.book-image');
+    
+    // Get the full image URL
+    let bookCover = '';
+    if (coverImg && coverImg.src) {
+        // Use the full image URL from Google Books API
+        bookCover = coverImg.src;
+    }
     
     console.log("Adding book to reading list:", {
         id: bookId,

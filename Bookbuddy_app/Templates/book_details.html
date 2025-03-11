@@ -106,7 +106,13 @@ function addToReadingList(bookId, listType) {
     const authorElement = document.querySelector('.text-muted');
     const bookAuthor = authorElement ? authorElement.textContent.trim() : 'Unknown Author';
     const coverImg = document.querySelector('.card-img-top');
-    const bookCover = coverImg ? coverImg.src.split('/').pop() : 'default-book-cover.jpg';
+    
+    // Get the full image URL
+    let bookCover = '';
+    if (coverImg && coverImg.src) {
+        // Use the full image URL
+        bookCover = coverImg.src;
+    }
     
     console.log("Adding book to reading list:", {
         id: bookId,
