@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block title %}Debug Reading List{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="mb-4">Debug Reading List</h1>
+    
+    <div class="mb-4">
+        <a href="{{ url_for('my_lib') }}" class="btn btn-primary">Back to My Library</a>
+        <a href="{{ url_for('test_add_book') }}" class="btn btn-success">Add Test Book</a>
+        <a href="{{ url_for('clear_reading_list') }}" class="btn btn-danger" onclick="return confirm('Are you sure you want to clear all books and reading list entries?')">Clear All Books</a>
+    </div>
+    
+    <h2>Reading List Entries</h2>
+    {% if entries %}
+        <div class="alert alert-info">
+            Found {{ entries|length }} entries in your reading list.
+        </div>
+        
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Reading List ID</th>
+                    <th>Book ID</th>
+                    <th>Book ID Type</th>
+                    <th>Book Exists</th>
+                    <th>Status</th>
+                    <th>Progress</th>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Cover Image</th>
+                    <th>Started At</th>
+                    <th>Finished At</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in entries %}
+                <tr>
+                    <td>{{ entry.reading_list_id }}</td>
+                    <td>{{ entry.book_id }}</td>
+                    <td>{{ entry.book_id_type }}</td>
+                    <td>
+                        {% if entry.book_exists %}
+                            <span class="badge bg-success">Yes</span>
+                        {% else %}
+                            <span class="badge bg-danger">No</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ entry.status }}</td>
+                    <td>{{ entry.progress }}%</td>
+                    <td>{{ entry.title if entry.book_exists else 'N/A' }}</td>
+                    <td>{{ entry.author if entry.book_exists else 'N/A' }}</td>
+                    <td>
+                        {% if entry.book_exists and entry.cover_image %}
+                            <img src="{{ url_for('static', filename='images/products/' + entry.cover_image) }}" 
+                                 alt="{{ entry.title }}" style="height: 50px;">
+                        {% else %}
+                            No image
+                        {% endif %}
+                    </td>
+                    <td>{{ entry.started_at }}</td>
+                    <td>{{ entry.finished_at }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="alert alert-warning">
+            No entries found in your reading list.
+        </div>
+    {% endif %}
+    
+    <h2 class="mt-5">All Books in Database</h2>
+    {% if books %}
+        <div class="alert alert-info">
+            Found {{ books|length }} books in the database.
+        </div>
+        
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Book ID</th>
+                    <th>ID Type</th>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Cover Image</th>
+                    <th>Summary (External ID)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for book in books %}
+                <tr>
+                    <td>{{ book.id }}</td>
+                    <td>{{ book.id_type }}</td>
+                    <td>{{ book.title }}</td>
+                    <td>{{ book.author }}</td>
+                    <td>
+                        {% if book.cover_image %}
+                            <img src="{{ url_for('static', filename='images/products/' + book.cover_image) }}" 
+                                 alt="{{ book.title }}" style="height: 50px;">
+                        {% else %}
+                            No image
+                        {% endif %}
+                    </td>
+                    <td>{{ book.summary }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="alert alert-warning">
+            No books found in the database.
+        </div>
+    {% endif %}
+</div>
+{% endblock %} 

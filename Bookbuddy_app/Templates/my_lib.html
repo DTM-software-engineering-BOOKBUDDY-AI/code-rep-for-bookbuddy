@@ -16,6 +16,9 @@
     <div class="row mb-5">
         <div class="col-12 text-center">
             <h1 class="display-4 mb-4">My Library</h1>
+            <div class="mb-3">
+                <a href="{{ url_for('debug_reading_list') }}" class="btn btn-sm btn-outline-secondary">Debug Reading List</a>
+            </div>
             <div class="row justify-content-center">
                 <div class="col-md-3">
                     <div class="card bg-primary text-white mb-3">
@@ -59,7 +62,11 @@
                 {% if books.current_books %}
                     {% for book in books.current_books %}
                     <div class="col-md-4 mb-4">
-                        <div class="card h-100">
+                        <div class="card h-100" 
+                             data-book-id="{{ book.id }}"
+                             data-title="{{ book.title }}"
+                             data-author="{{ book.author }}"
+                             data-cover="{{ book.image }}">
                             <img src="{{ url_for('static', filename='images/products/' + book.image) }}" 
                                  class="card-img-top" alt="{{ book.title }}"
                                  style="height: 300px; object-fit: cover;">
@@ -115,7 +122,11 @@
                 {% if books.want_to_read %}
                     {% for book in books.want_to_read %}
                     <div class="col-md-4 mb-4">
-                        <div class="card h-100">
+                        <div class="card h-100" 
+                             data-book-id="{{ book.id }}"
+                             data-title="{{ book.title }}"
+                             data-author="{{ book.author }}"
+                             data-cover="{{ book.image }}">
                             <img src="{{ url_for('static', filename='images/products/' + book.image) }}" 
                                  class="card-img-top" alt="{{ book.title }}"
                                  style="height: 300px; object-fit: cover;">
@@ -150,7 +161,11 @@
                 {% if books.finished_books %}
                     {% for book in books.finished_books %}
                     <div class="col-md-4 mb-4">
-                        <div class="card h-100">
+                        <div class="card h-100" 
+                             data-book-id="{{ book.id }}"
+                             data-title="{{ book.title }}"
+                             data-author="{{ book.author }}"
+                             data-cover="{{ book.image }}">
                             <img src="{{ url_for('static', filename='images/products/' + book.image) }}" 
                                  class="card-img-top" alt="{{ book.title }}"
                                  style="height: 300px; object-fit: cover;">

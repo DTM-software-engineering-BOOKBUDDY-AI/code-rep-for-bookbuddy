@@ -299,6 +299,18 @@ def my_lib():
         ReadingList.status == 'finished'
     ).all()
     
+    # Helper function to check if an image exists
+    def get_image_path(image_name):
+        if not image_name or image_name == 'default-book-cover.jpg':
+            return 'default-book-cover.jpg'
+        
+        # Check if the image exists in the static folder
+        image_path = os.path.join(app.static_folder, 'images', 'products', image_name)
+        if os.path.exists(image_path):
+            return image_name
+        else:
+            return 'default-book-cover.jpg'
+    
     # Format the data for the template
     library_books = {
         'current_books': [
@@ -307,7 +319,7 @@ def my_lib():
                 'title': book.title,
                 'author': book.author,
                 'progress': reading_list.progress or 0,
-                'image': book.cover_image or 'default-book-cover.jpg'
+                'image': get_image_path(book.cover_image)
             } for book, reading_list in current_books
         ],
         'want_to_read': [
@@ -315,7 +327,7 @@ def my_lib():
                 'id': book.id,
                 'title': book.title,
                 'author': book.author,
-                'image': book.cover_image or 'default-book-cover.jpg'
+                'image': get_image_path(book.cover_image)
             } for book, reading_list in want_to_read_books
         ],
         'finished_books': [
@@ -323,7 +335,7 @@ def my_lib():
                 'id': book.id,
                 'title': book.title,
                 'author': book.author,
-                'image': book.cover_image or 'default-book-cover.jpg'
+                'image': get_image_path(book.cover_image)
             } for book, reading_list in finished_books
         ]
     }
@@ -398,34 +410,96 @@ def book_search():
 def add_to_reading_list():
     try:
         data = request.get_json()
-        book_id = data.get('book_id')
+        external_book_id = data.get('book_id')
         status = data.get('status')
         
-        existing_book = ReadingList.query.filter_by(
+        # Log the received data for debugging
+        app.logger.debug(f"Received data: {data}")
+        
+        # Get book details from the request data
+        book_title = data.get('title', 'Unknown Title')
+        book_author = data.get('author', 'Unknown Author')
+        book_cover = data.get('cover_image', 'default-book-cover.jpg')
+        
+        # Print the data for debugging
+        print(f"Book data: ID={external_book_id}, Title={book_title}, Author={book_author}, Cover={book_cover}")
+        
+        # First, check if we have a book with this external ID in the summary field
+        existing_books = Book.query.filter(Book.summary.like(f"%External ID: {external_book_id}%")).all()
+        
+        if existing_books:
+            # Use the first matching book
+            book = existing_books[0]
+            book_id = book.id
+            app.logger.debug(f"Found existing book with external ID {external_book_id}, internal ID: {book_id}")
+            
+            # Always update the book details to ensure we have the latest information
+            if book_title != 'Unknown Title':
+                book.title = book_title
+            if book_author != 'Unknown Author':
+                book.author = book_author
+            if book_cover != 'default-book-cover.jpg':
+                book.cover_image = book_cover
+                
+            app.logger.debug(f"Updated book details: Title={book.title}, Author={book.author}, Cover={book.cover_image}")
+        else:
+            # Create a new book
+            app.logger.debug(f"Creating new book: Title={book_title}, Author={book_author}, Cover={book_cover}, External ID={external_book_id}")
+            
+            try:
+                new_book = Book(
+                    title=book_title,
+                    author=book_author,
+                    cover_image=book_cover,
+                    summary=f"External ID: {external_book_id}"
+                )
+                db.session.add(new_book)
+                db.session.flush()  # Get the auto-generated ID
+                book_id = new_book.id
+                app.logger.debug(f"Created new book with ID: {book_id}")
+            except Exception as book_error:
+                app.logger.error(f"Error creating book: {str(book_error)}")
+                return jsonify({
+                    'success': False,
+                    'message': f"Error creating book: {str(book_error)}"
+                }), 500
+        
+        # Now use the internal book_id for the reading list
+        existing_entry = ReadingList.query.filter_by(
             user_id=current_user.id,
             book_id=book_id
         ).first()
         
-        if existing_book:
+        if existing_entry:
             # Update existing entry
-            existing_book.status = status
+            existing_entry.status = status
             if status == 'current':
-                existing_book.started_at = datetime.utcnow()
+                existing_entry.started_at = datetime.utcnow()
             elif status == 'finished':
-                existing_book.finished_at = datetime.utcnow()
+                existing_entry.finished_at = datetime.utcnow()
             message = 'Reading status updated successfully'
+            app.logger.debug(f"Updated reading list entry: {existing_entry.id}")
         else:
             # Add new entry
-            reading_list_item = ReadingList(
-                user_id=current_user.id,
-                book_id=book_id,
-                status=status,
-                started_at=datetime.utcnow() if status == 'current' else None
-            )
-            db.session.add(reading_list_item)
-            message = 'Book added to reading list successfully'
+            try:
+                reading_list_item = ReadingList(
+                    user_id=current_user.id,
+                    book_id=book_id,
+                    status=status,
+                    started_at=datetime.utcnow() if status == 'current' else None
+                )
+                db.session.add(reading_list_item)
+                message = 'Book added to reading list successfully'
+                app.logger.debug(f"Created new reading list entry for user {current_user.id} and book {book_id}")
+            except Exception as rl_error:
+                app.logger.error(f"Error creating reading list entry: {str(rl_error)}")
+                return jsonify({
+                    'success': False,
+                    'message': f"Error adding to reading list: {str(rl_error)}"
+                }), 500
             
         db.session.commit()
+        app.logger.debug("Database changes committed successfully")
         
         return jsonify({
             'success': True,
@@ -433,9 +507,11 @@ def add_to_reading_list():
         })
         
     except Exception as e:
+        db.session.rollback()
+        app.logger.error(f"Error in add-to-reading-list: {str(e)}")
         return jsonify({
             'success': False,
-            'message': str(e)
+            'message': f"Error: {str(e)}"
         }), 500
 
 @app.route('/book/<int:book_id>')
@@ -454,6 +530,108 @@ def book_details(book_id):
     return render_template('book_details.html', 
                          book=book, 
                          reading_status=reading_status)
+
+@app.route('/debug_reading_list')
+@login_required
+def debug_reading_list():
+    # Get all reading list entries for the current user
+    reading_list_entries = ReadingList.query.filter_by(user_id=current_user.id).all()
+    
+    # Prepare data for display
+    entries_data = []
+    for entry in reading_list_entries:
+        book = Book.query.get(entry.book_id)
+        book_data = {
+            'reading_list_id': entry.id,
+            'book_id': entry.book_id,
+            'book_id_type': type(entry.book_id).__name__,
+            'status': entry.status,
+            'progress': entry.progress,
+            'started_at': entry.started_at,
+            'finished_at': entry.finished_at,
+            'book_exists': book is not None
+        }
+        
+        if book:
+            book_data.update({
+                'title': book.title,
+                'author': book.author,
+                'cover_image': book.cover_image,
+                'summary': book.summary
+            })
+        
+        entries_data.append(book_data)
+    
+    # Get all books in the database
+    all_books = Book.query.all()
+    books_data = [{
+        'id': book.id,
+        'id_type': type(book.id).__name__,
+        'title': book.title,
+        'author': book.author,
+        'cover_image': book.cover_image,
+        'summary': book.summary
+    } for book in all_books]
+    
+    return render_template('debug_reading_list.html', entries=entries_data, books=books_data)
+
+@app.route('/test_add_book')
+@login_required
+def test_add_book():
+    try:
+        # Create a test book
+        test_book = Book(
+            title="Test Book",
+            author="Test Author",
+            cover_image="default-book-cover.jpg"
+        )
+        db.session.add(test_book)
+        db.session.flush()  # Get the ID
+        
+        # Create a reading list entry
+        reading_list_item = ReadingList(
+            user_id=current_user.id,
+            book_id=test_book.id,
+            status='want',
+            progress=0
+        )
+        db.session.add(reading_list_item)
+        db.session.commit()
+        
+        flash(f'Test book added successfully with ID: {test_book.id}', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error adding test book: {str(e)}', 'danger')
+    
+    return redirect(url_for('debug_reading_list'))
+
+@app.route('/clear_reading_list')
+@login_required
+def clear_reading_list():
+    try:
+        # Get all reading list entries for the current user
+        reading_list_entries = ReadingList.query.filter_by(user_id=current_user.id).all()
+        
+        # Get the book IDs
+        book_ids = [entry.book_id for entry in reading_list_entries]
+        
+        # Delete all reading list entries
+        for entry in reading_list_entries:
+            db.session.delete(entry)
+        
+        # Delete the books
+        for book_id in book_ids:
+            book = Book.query.get(book_id)
+            if book:
+                db.session.delete(book)
+        
+        db.session.commit()
+        flash('All books and reading list entries have been cleared.', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error clearing reading list: {str(e)}', 'danger')
+    
+    return redirect(url_for('debug_reading_list'))
 
 if __name__ == '__main__':
     with app.app_context():

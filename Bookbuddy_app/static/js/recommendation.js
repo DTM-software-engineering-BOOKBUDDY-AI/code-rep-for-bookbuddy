@@ -61,6 +61,28 @@ function toggleSummary(index) {
 }
 
 function addToReadingList(bookId, listType) {
+    // Find the book card
+    const bookCard = document.querySelector(`.book-card[data-book-id="${bookId}"]`);
+    if (!bookCard) {
+        console.error("Book card not found for ID:", bookId);
+        alert("Error: Could not find book details");
+        return;
+    }
+    
+    // Get book details
+    const bookTitle = bookCard.querySelector('.book-title').textContent.trim();
+    const bookAuthor = bookCard.querySelector('.book-author').textContent.trim();
+    const coverImg = bookCard.querySelector('.book-cover');
+    const bookCover = coverImg ? coverImg.src.split('/').pop() : 'default-book-cover.jpg';
+    
+    console.log("Adding book to reading list:", {
+        id: bookId,
+        title: bookTitle,
+        author: bookAuthor,
+        cover: bookCover,
+        status: listType
+    });
+    
     fetch('/add-to-reading-list', {
         method: 'POST',
         headers: {
@@ -69,7 +91,10 @@ function addToReadingList(bookId, listType) {
         },
         body: JSON.stringify({
             book_id: bookId,
-            status: listType
+            status: listType,
+            title: bookTitle,
+            author: bookAuthor,
+            cover_image: bookCover
         })
     })
     .then(response => response.json())
@@ -84,7 +109,7 @@ function addToReadingList(bookId, listType) {
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('Error updating reading list');
+        alert('An error occurred. Please try again.');
     });
 }
 

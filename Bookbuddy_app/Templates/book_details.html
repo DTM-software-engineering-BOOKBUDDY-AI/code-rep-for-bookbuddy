@@ -101,6 +101,21 @@
 <!-- Add JavaScript for handling reading list actions -->
 <script>
 function addToReadingList(bookId, listType) {
+    // Get book details from the page
+    const bookTitle = document.querySelector('h1').textContent.trim();
+    const authorElement = document.querySelector('.text-muted');
+    const bookAuthor = authorElement ? authorElement.textContent.trim() : 'Unknown Author';
+    const coverImg = document.querySelector('.card-img-top');
+    const bookCover = coverImg ? coverImg.src.split('/').pop() : 'default-book-cover.jpg';
+    
+    console.log("Adding book to reading list:", {
+        id: bookId,
+        title: bookTitle,
+        author: bookAuthor,
+        cover: bookCover,
+        status: listType
+    });
+    
     fetch(`/add-to-reading-list`, {
         method: 'POST',
         headers: {
@@ -108,7 +123,10 @@ function addToReadingList(bookId, listType) {
         },
         body: JSON.stringify({
             book_id: bookId,
-            status: listType
+            status: listType,
+            title: bookTitle,
+            author: bookAuthor,
+            cover_image: bookCover
         })
     })
     .then(response => response.json())
