@@ -16,7 +16,7 @@ def get_books_api():
     return current_app.books_api
 
 # Route for searching books (like using a library catalog)
-@books_bp.route('search', methods=['GET'])
+@books_bp.route('/search', methods=['GET'])
 def search_books():
     # Get the search term from the user's request
     query = request.args.get('q', '')

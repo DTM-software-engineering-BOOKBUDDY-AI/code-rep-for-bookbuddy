@@ -60,10 +60,11 @@
                         <div class="col-md-6 mb-2">
                             <div class="d-flex align-items-center">
                                 <span class="text-warning me-2">
-                                    {% for i in range(book.rating) %}★{% endfor %}
-                                    {% for i in range(5 - book.rating) %}☆{% endfor %}
+                                    {% for _ in range(book.rating|int) %}★{% endfor %}{% for _ in range(5 - book.rating|int) %}☆{% endfor %}
                                 </span>
-                                <span class="text-muted">({{ book.ratings_count }} ratings)</span>
+                                <span class="text-muted">
+                                    {{ book.rating|float }} out of 5
+                                </span>
                             </div>
                         </div>
                         {% endif %}

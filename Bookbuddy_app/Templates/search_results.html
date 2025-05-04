@@ -103,14 +103,11 @@
                         </p>
                         {% if book.rating %}
                         <div class="mb-2 rating-stars">
-                            {{ "★" * book.rating }}{{ "☆" * (5 - book.rating) }}
-                            <small class="text-muted">({{ book.ratings_count }})</small>
+                            {% for _ in range(book.rating|int) %}★{% endfor %}{% for _ in range(5 - book.rating|int) %}☆{% endfor %}
                         </div>
                         {% endif %}
-                    </div>
-                    <div class="card-footer bg-transparent border-top-0">
-                        <a href="{{ url_for('books.book_details', book_id=book.id) }}" 
-                           class="btn btn-primary btn-sm w-100">View Details</a>
+                        <a href="{{ url_for('books_details_page', book_id=book.id) }}"
+                           class="btn btn-primary stretched-link">View Details</a>
                     </div>
                 </div>
             </div>
@@ -118,15 +115,8 @@
         </div>
     {% else %}
         <div class="alert alert-info">
-            <h4 class="alert-heading">No Results Found</h4>
-            <p>We couldn't find any books matching your search for "{{ query }}".</p>
-            <hr>
-            <p class="mb-0">Try:</p>
-            <ul>
-                <li>Using different keywords</li>
-                <li>Checking your spelling</li>
-                <li>Using more general terms</li>
-            </ul>
+            <i class="fas fa-info-circle me-2"></i>
+            No books found matching "{{ query }}". Try a different search term.
         </div>
     {% endif %}
 </div>
