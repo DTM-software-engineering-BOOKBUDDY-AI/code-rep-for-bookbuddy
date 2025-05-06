@@ -102,15 +102,3 @@ The following issues were fixed in the test suite:
    - Fixed Flask configuration issues with `FlaskConfig` class
    - Properly mocked blueprint registration
 
-## Current Coverage
-
-Current test coverage is approximately 30%, with the highest coverage in:
-- `__init__.py` (96%)
-- `models.py` (94%)
-- `config.py` (91%)
-- `check_database.py` (85%)
-
-Areas needing more test coverage:
-- `Recommendation.py` (0%)
-- `app.py` (21%)
-- `routes/` (24-25%)
